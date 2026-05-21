@@ -1,5 +1,8 @@
 package com.agentwork.graphmesh.contextcore
 
+import com.agentwork.graphmesh.contextcore.application.port.`in`.BuildContextCoreUseCase
+import com.agentwork.graphmesh.contextcore.application.port.`in`.ContextCoreUseCases
+import com.agentwork.graphmesh.contextcore.application.port.`in`.ImportContextCoreUseCase
 import com.agentwork.graphmesh.ontology.OntologyMetadata
 import com.agentwork.graphmesh.ontology.application.port.`in`.ImportTurtleOntologyUseCase
 import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
@@ -21,7 +24,7 @@ class ContextCoreService(
     private val importTurtleOntologyUseCase: ImportTurtleOntologyUseCase,
     private val blobStore: BlobStore,
     private val registry: ContextCoreRegistry
-) {
+) : ContextCoreUseCases, BuildContextCoreUseCase, ImportContextCoreUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val mapper = jacksonObjectMapper().apply { findAndRegisterModules() }
@@ -35,7 +38,7 @@ class ContextCoreService(
         private const val BUCKET = "graphmesh-context-cores"
     }
 
-    fun build(request: BuildRequest): CoreManifest {
+    override fun buildContextCore(request: BuildRequest): CoreManifest {
         logger.info("Building context core: coreId={}, version={}, source={}",
             request.coreId, request.version, request.sourceCollection)
 
@@ -88,7 +91,7 @@ class ContextCoreService(
         return finalManifest
     }
 
-    fun import(request: ImportRequest): ImportResult {
+    override fun importContextCore(request: ImportRequest): ImportResult {
         val record = registry.find(request.coreId, request.version)
             ?: error("Unknown context core: ${request.coreId}@${request.version}")
 
@@ -150,20 +153,20 @@ class ContextCoreService(
         )
     }
 
-    fun list(): List<CoreManifest> = registry.listAll().map { it.manifest }
+    override fun list(): List<CoreManifest> = registry.listAll().map { it.manifest }
 
-    fun find(coreId: String, version: String): CoreManifest? = registry.find(coreId, version)?.manifest
+    override fun find(coreId: String, version: String): CoreManifest? = registry.find(coreId, version)?.manifest
 
-    fun findByTag(coreId: String, tag: String): CoreManifest? = registry.findByTag(coreId, tag)?.manifest
+    override fun findByTag(coreId: String, tag: String): CoreManifest? = registry.findByTag(coreId, tag)?.manifest
 
-    fun delete(coreId: String, version: String) {
+    override fun delete(coreId: String, version: String) {
         val record = registry.find(coreId, version) ?: return
         blobStore.delete(BUCKET, record.blobKey)
         registry.unregister(coreId, version)
         logger.info("Context core deleted: {}@{}", coreId, version)
     }
 
-    fun tag(coreId: String, version: String, tag: String): CoreManifest? {
+    override fun tag(coreId: String, version: String, tag: String): CoreManifest? {
         registry.addTag(coreId, version, tag)
         return registry.find(coreId, version)?.manifest
     }

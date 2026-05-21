@@ -1,6 +1,9 @@
 package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.contextcore.*
+import com.agentwork.graphmesh.contextcore.application.port.`in`.BuildContextCoreUseCase
+import com.agentwork.graphmesh.contextcore.application.port.`in`.ContextCoreUseCases
+import com.agentwork.graphmesh.contextcore.application.port.`in`.ImportContextCoreUseCase
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -8,19 +11,21 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class ContextCoreController(
-    private val contextCoreService: ContextCoreService
+    private val contextCoreUseCases: ContextCoreUseCases,
+    private val buildContextCoreUseCase: BuildContextCoreUseCase,
+    private val importContextCoreUseCase: ImportContextCoreUseCase
 ) {
 
     @QueryMapping
-    fun contextCores(): List<CoreManifest> = contextCoreService.list()
+    fun contextCores(): List<CoreManifest> = contextCoreUseCases.list()
 
     @QueryMapping
     fun contextCore(@Argument coreId: String, @Argument version: String): CoreManifest? =
-        contextCoreService.find(coreId, version)
+        contextCoreUseCases.find(coreId, version)
 
     @QueryMapping
     fun contextCoreByTag(@Argument coreId: String, @Argument tag: String): CoreManifest? =
-        contextCoreService.findByTag(coreId, tag)
+        contextCoreUseCases.findByTag(coreId, tag)
 
     @MutationMapping
     fun buildContextCore(
@@ -43,7 +48,7 @@ class ContextCoreController(
             tags = tags?.toSet() ?: emptySet(),
             ontologyKey = ontologyKey
         )
-        return contextCoreService.build(request)
+        return buildContextCoreUseCase.buildContextCore(request)
     }
 
     @MutationMapping
@@ -59,7 +64,7 @@ class ContextCoreController(
             NamespaceRewrite(namespaceFrom, namespaceTo)
         } else null
 
-        return contextCoreService.`import`(ImportRequest(
+        return importContextCoreUseCase.importContextCore(ImportRequest(
             coreId = coreId,
             version = version,
             targetCollection = targetCollection,
@@ -70,11 +75,11 @@ class ContextCoreController(
 
     @MutationMapping
     fun tagContextCore(@Argument coreId: String, @Argument version: String, @Argument tag: String): CoreManifest? =
-        contextCoreService.tag(coreId, version, tag)
+        contextCoreUseCases.tag(coreId, version, tag)
 
     @MutationMapping
     fun deleteContextCore(@Argument coreId: String, @Argument version: String): Boolean {
-        contextCoreService.delete(coreId, version)
+        contextCoreUseCases.delete(coreId, version)
         return true
     }
 }
