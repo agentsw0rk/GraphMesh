@@ -3,7 +3,7 @@ package com.agentwork.graphmesh.extraction.agent
 import ai.koog.agents.core.tools.SimpleTool
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.serialization.typeToken
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
 import com.agentwork.graphmesh.query.graphrag.GraphRagService
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
@@ -62,7 +62,7 @@ class ValidateEntityTool(
 }
 
 class ContextExpandTool(
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
     private val currentChunkId: String
 ) : SimpleTool<ContextExpandTool.Args>(
     argsType = typeToken<Args>(),

@@ -6,7 +6,7 @@ import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.structured.DataRow
 import com.agentwork.graphmesh.structured.StructuredDataService
 import com.agentwork.graphmesh.structured.TableSchema
@@ -24,7 +24,7 @@ class StructuredDataExtractorService(
     private val tableDetector: TableDetector,
     private val schemaInferenceService: SchemaInferenceService,
     private val structuredDataService: StructuredDataService,
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String
 ) {
 

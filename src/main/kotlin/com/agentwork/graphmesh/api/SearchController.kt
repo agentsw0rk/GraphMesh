@@ -6,7 +6,7 @@ import ai.koog.prompt.executor.clients.LLMEmbeddingProvider
 import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.extraction.embedding.EmbeddingConfig
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.storage.vector.VectorStore
 import kotlinx.coroutines.runBlocking
 import org.springframework.graphql.data.method.annotation.Argument
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Controller
 class SearchController(
     private val vectorStore: VectorStore,
     private val embeddingProvider: LLMEmbeddingProvider,
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
     private val embeddingConfig: EmbeddingConfig
 ) {
 

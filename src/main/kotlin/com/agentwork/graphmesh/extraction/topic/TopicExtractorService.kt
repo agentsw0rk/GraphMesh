@@ -2,7 +2,7 @@ package com.agentwork.graphmesh.extraction.topic
 
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.llm.resolveLlmModel
 import com.agentwork.graphmesh.llm.sanitizeForLlm
 import com.agentwork.graphmesh.provenance.ProvenanceService
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service
 class TopicExtractorService(
     private val promptExecutor: PromptExecutor,
     private val quadStore: QuadStore,
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
     private val provenanceService: ProvenanceService,
     private val ontologyMatcher: TopicOntologyMatcher,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String,

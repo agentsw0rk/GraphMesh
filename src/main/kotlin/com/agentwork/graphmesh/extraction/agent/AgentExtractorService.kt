@@ -8,7 +8,7 @@ import ai.koog.agents.ext.agent.reActStrategy
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.provenance.ProvenanceService
 import com.agentwork.graphmesh.provenance.SubgraphProvenance
 import com.agentwork.graphmesh.query.graphrag.GraphRagService
@@ -30,7 +30,7 @@ class AgentExtractorService(
     private val promptExecutor: PromptExecutor,
     private val graphRagService: GraphRagService,
     private val quadStore: QuadStore,
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
     private val provenanceService: ProvenanceService,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String
 ) {
