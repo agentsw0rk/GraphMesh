@@ -1,5 +1,6 @@
 package com.agentwork.graphmesh.provenance
 
+import com.agentwork.graphmesh.provenance.application.port.`in`.ProvenanceUseCases
 import com.agentwork.graphmesh.rdf.NamedGraph
 import com.agentwork.graphmesh.rdf.RdfTerm
 import com.agentwork.graphmesh.rdf.Triple
@@ -9,7 +10,8 @@ import kotlin.test.assertTrue
 
 class ProvenanceServiceTest {
 
-    private val service = ProvenanceService()
+    // Assigned to interface type — proves ProvenanceService satisfies ProvenanceUseCases
+    private val service: ProvenanceUseCases = ProvenanceService()
 
     @Test
     fun `buildSubgraphQuads generates tg-contains for each triple`() {
