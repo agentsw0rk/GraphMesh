@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.api
 
-import com.agentwork.graphmesh.collection.CollectionOntologyService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionOntologyUseCases
 import com.agentwork.graphmesh.ontology.OntologyInfoPayload
 import com.agentwork.graphmesh.ontology.OntologyService
 import com.agentwork.graphmesh.rdf.NamedGraph
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class CollectionDataController(
-    private val collectionOntologyService: CollectionOntologyService,
+    private val collectionOntologyService: CollectionOntologyUseCases,
     private val quadStore: QuadStore,
     private val ontologyService: OntologyService
 ) {

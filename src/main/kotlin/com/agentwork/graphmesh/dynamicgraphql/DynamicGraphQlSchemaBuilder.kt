@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.dynamicgraphql
 
-import com.agentwork.graphmesh.collection.CollectionOntologyService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionOntologyUseCases
 import com.agentwork.graphmesh.ontology.DatatypeProperty
 import com.agentwork.graphmesh.ontology.ObjectProperty
 import com.agentwork.graphmesh.ontology.Ontology
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service
 class DynamicGraphQlSchemaBuilder(
     private val quadStore: QuadStore,
     private val ontologyCache: OntologyCache,
-    private val collectionOntologyService: CollectionOntologyService,
+    private val collectionOntologyService: CollectionOntologyUseCases,
     private val registry: DynamicGraphQlRegistry,
 ) {
 
