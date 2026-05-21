@@ -3,15 +3,15 @@ package com.agentwork.graphmesh.extraction.ontology
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.message.Message
 import com.agentwork.graphmesh.collection.Collection
-import com.agentwork.graphmesh.collection.CollectionService
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.ontology.DatatypeProperty
 import com.agentwork.graphmesh.ontology.LangLabel
 import com.agentwork.graphmesh.ontology.ObjectProperty
 import com.agentwork.graphmesh.ontology.Ontology
 import com.agentwork.graphmesh.ontology.OntologyClass
 import com.agentwork.graphmesh.ontology.OntologyMetadata
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.storage.QuadStore
 import com.agentwork.graphmesh.storage.StoredQuad
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -27,15 +27,15 @@ import kotlin.test.assertTrue
 class OntologyGuidedExtractorServiceTest {
 
     private val promptExecutor = mockk<PromptExecutor>()
-    private val ontologyService = mockk<OntologyService>()
-    private val collectionService = mockk<CollectionService>()
+    private val ontologyService = mockk<OntologyUseCases>()
+    private val collectionService = mockk<CollectionUseCases>()
     private val quadStore = mockk<QuadStore>(relaxed = true)
-    private val librarianService = mockk<LibrarianService>()
+    private val librarianService = mockk<LibrarianUseCases>()
     private val objectMapper = jacksonObjectMapper()
 
     private val service = OntologyGuidedExtractorService(
         promptExecutor = promptExecutor,
-        ontologyService = ontologyService,
+        ontologyUseCases = ontologyService,
         collectionService = collectionService,
         quadStore = quadStore,
         librarianService = librarianService,

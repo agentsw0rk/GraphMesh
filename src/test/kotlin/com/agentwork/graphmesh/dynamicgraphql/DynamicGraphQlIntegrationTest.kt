@@ -31,7 +31,7 @@ class DynamicGraphQlIntegrationTest {
 
     @Test
     fun `import RDF with ontology creates dynamic endpoint`() {
-        val collection = collectionService.create(
+        val collection = collectionService.createCollection(
             name = "dyngql-test-${System.currentTimeMillis()}",
             description = "integration test"
         )

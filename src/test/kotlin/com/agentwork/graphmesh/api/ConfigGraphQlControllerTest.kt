@@ -1,8 +1,9 @@
 package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.config.ConfigItem
-import com.agentwork.graphmesh.config.ConfigService
 import com.agentwork.graphmesh.config.ConfigType
+import com.agentwork.graphmesh.config.application.port.`in`.ConfigUseCases
+import com.agentwork.graphmesh.config.application.port.`in`.SaveConfigUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -13,8 +14,9 @@ import kotlin.test.assertNull
 
 class ConfigGraphQlControllerTest {
 
-    private val service = mockk<ConfigService>()
-    private val controller = ConfigGraphQlController(service)
+    private val service = mockk<ConfigUseCases>()
+    private val saveConfigUseCase = mockk<SaveConfigUseCase>()
+    private val controller = ConfigGraphQlController(service, saveConfigUseCase)
 
     @Test
     fun `configKeys returns entries for all types when type omitted`() {
@@ -64,7 +66,7 @@ class ConfigGraphQlControllerTest {
     fun `setConfig saves and returns the entry`() {
         val captured = slot<ConfigItem>()
         every { service.findByTypeAndKey(ConfigType.LLM_SETTINGS, "model") } returns null
-        every { service.save(capture(captured)) } answers {
+        every { saveConfigUseCase.saveConfig(capture(captured)) } answers {
             captured.captured.copy(version = 2)
         }
 
@@ -74,6 +76,6 @@ class ConfigGraphQlControllerTest {
         assertEquals("model", result.key)
         assertEquals("gpt-5", result.value)
         assertEquals(2, result.version)
-        verify { service.save(any()) }
+        verify { saveConfigUseCase.saveConfig(any()) }
     }
 }

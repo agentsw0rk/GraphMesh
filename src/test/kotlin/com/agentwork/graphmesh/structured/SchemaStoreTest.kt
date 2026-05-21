@@ -1,8 +1,9 @@
 package com.agentwork.graphmesh.structured
 
 import com.agentwork.graphmesh.config.ConfigItem
-import com.agentwork.graphmesh.config.ConfigService
 import com.agentwork.graphmesh.config.ConfigType
+import com.agentwork.graphmesh.config.application.port.`in`.ConfigUseCases
+import com.agentwork.graphmesh.config.application.port.`in`.SaveConfigUseCase
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
@@ -17,8 +18,9 @@ import kotlin.test.assertTrue
 class SchemaStoreTest {
 
     private val objectMapper = jacksonObjectMapper()
-    private val configService = mockk<ConfigService>()
-    private val store = SchemaStore(configService, objectMapper)
+    private val configService = mockk<ConfigUseCases>()
+    private val saveConfigUseCase = mockk<SaveConfigUseCase>()
+    private val store = SchemaStore(configService, saveConfigUseCase, objectMapper)
 
     private val sampleSchema = TableSchema(
         name = "users",
@@ -35,7 +37,7 @@ class SchemaStoreTest {
     fun `save serializes schema and stores as ConfigItem`() {
         val itemSlot = slot<ConfigItem>()
         every { configService.findByTypeAndKey(ConfigType.SCHEMA, "users") } returns null
-        every { configService.save(capture(itemSlot)) } answers { itemSlot.captured }
+        every { saveConfigUseCase.saveConfig(capture(itemSlot)) } answers { itemSlot.captured }
 
         store.save(sampleSchema)
 
@@ -54,7 +56,7 @@ class SchemaStoreTest {
         val existing = ConfigItem(id = "existing-id", type = ConfigType.SCHEMA, key = "users", value = "{}")
         val itemSlot = slot<ConfigItem>()
         every { configService.findByTypeAndKey(ConfigType.SCHEMA, "users") } returns existing
-        every { configService.save(capture(itemSlot)) } answers { itemSlot.captured }
+        every { saveConfigUseCase.saveConfig(capture(itemSlot)) } answers { itemSlot.captured }
 
         store.save(sampleSchema)
 

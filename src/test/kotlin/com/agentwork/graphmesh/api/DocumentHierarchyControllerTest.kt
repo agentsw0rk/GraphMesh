@@ -2,7 +2,7 @@ package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.librarian.Document
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 
 class DocumentHierarchyControllerTest {
 
-    private val librarian = mockk<LibrarianService>()
+    private val librarian = mockk<LibrarianUseCases>()
     private val controller = DocumentHierarchyController(librarian)
 
     @Test

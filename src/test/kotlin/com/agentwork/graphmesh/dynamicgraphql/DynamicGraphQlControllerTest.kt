@@ -1,7 +1,7 @@
 package com.agentwork.graphmesh.dynamicgraphql
 
 import com.agentwork.graphmesh.collection.Collection
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
 import graphql.schema.GraphQLObjectType
 import graphql.schema.GraphQLSchema
 import graphql.schema.GraphQLCodeRegistry
@@ -18,7 +18,7 @@ import kotlin.test.assertNotNull
 class DynamicGraphQlControllerTest {
 
     private val registry = DynamicGraphQlRegistry()
-    private val collectionService = mockk<CollectionService>()
+    private val collectionService = mockk<CollectionUseCases>()
     private val controller = DynamicGraphQlController(registry, collectionService)
 
     private fun registerDummySchema(collectionId: String) {

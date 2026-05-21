@@ -1,6 +1,7 @@
 package com.agentwork.graphmesh.skos
 
 import com.agentwork.graphmesh.ontology.LangLabel
+import com.agentwork.graphmesh.skos.application.port.`in`.SkosUseCases
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -10,7 +11,7 @@ import kotlin.test.assertNull
 
 class SkosControllerTest {
 
-    private val service = mockk<SkosService>()
+    private val service = mockk<SkosUseCases>()
     private val controller = SkosController(service)
 
     private val sampleScheme = SkosConceptScheme(

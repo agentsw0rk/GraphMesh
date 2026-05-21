@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.query
 
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.storage.InMemoryQuadStore
 import com.agentwork.graphmesh.storage.StoredQuad
 import io.mockk.every
@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 class CollectionContentTypeServiceTest {
 
     private val quadStore = InMemoryQuadStore()
-    private val librarianService = mockk<LibrarianService>()
+    private val librarianService = mockk<LibrarianUseCases>()
     private val service = CollectionContentTypeService(quadStore, librarianService)
 
     @Test

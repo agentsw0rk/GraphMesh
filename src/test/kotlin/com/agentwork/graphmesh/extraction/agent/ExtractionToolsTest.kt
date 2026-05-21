@@ -2,10 +2,10 @@ package com.agentwork.graphmesh.extraction.agent
 
 import com.agentwork.graphmesh.librarian.Document
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.query.graphrag.GraphRagResult
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
 import com.agentwork.graphmesh.query.graphrag.SelectedEdge
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.storage.QuadStore
 import com.agentwork.graphmesh.storage.StoredQuad
@@ -22,7 +22,7 @@ class ExtractionToolsTest {
 
     @Test
     fun `GraphQueryTool queries graph and returns answer with sources`() = runBlocking {
-        val graphRagService = mockk<GraphRagService>()
+        val graphRagService = mockk<GraphRagUseCase>()
         every { graphRagService.query(any()) } returns GraphRagResult(
             sessionId = UUID.randomUUID(),
             answer = "Photosynthesis converts sunlight to energy.",
@@ -82,7 +82,7 @@ class ExtractionToolsTest {
 
     @Test
     fun `ContextExpandTool returns sibling chunk texts`() = runBlocking {
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
 
         val chunk = Document(
             id = "chunk-1", collectionId = "col-1", parentId = "page-1",
@@ -106,7 +106,7 @@ class ExtractionToolsTest {
 
     @Test
     fun `ContextExpandTool returns empty message when no parent`() = runBlocking {
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
 
         val chunk = Document(
             id = "chunk-1", collectionId = "col-1", parentId = null,

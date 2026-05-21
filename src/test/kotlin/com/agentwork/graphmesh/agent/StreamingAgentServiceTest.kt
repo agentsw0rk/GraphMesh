@@ -2,8 +2,8 @@ package com.agentwork.graphmesh.agent
 
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.streaming.StreamFrame
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -17,8 +17,8 @@ import kotlin.test.assertTrue
 class StreamingAgentServiceTest {
 
     private val promptExecutor = mockk<PromptExecutor>()
-    private val graphRagService = mockk<GraphRagService>()
-    private val documentRagService = mockk<DocumentRagService>()
+    private val graphRagService = mockk<GraphRagUseCase>()
+    private val documentRagService = mockk<DocumentRagUseCase>()
     private val toolGroupRegistry = ToolGroupRegistry()
 
     private val service = StreamingAgentServiceImpl(

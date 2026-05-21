@@ -1,11 +1,11 @@
 package com.agentwork.graphmesh.agent
 
 import com.agentwork.graphmesh.query.docrag.DocumentRagResult
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
 import com.agentwork.graphmesh.query.docrag.SourceAttribution
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagResult
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
 import com.agentwork.graphmesh.query.graphrag.SelectedEdge
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -17,7 +17,7 @@ class AgentQueryToolsTest {
 
     @Test
     fun `KnowledgeQueryTool returns answer with sources`() = runBlocking {
-        val graphRagService = mockk<GraphRagService>()
+        val graphRagService = mockk<GraphRagUseCase>()
         every { graphRagService.query(any()) } returns GraphRagResult(
             sessionId = UUID.randomUUID(),
             answer = "Plants perform photosynthesis.",
@@ -41,7 +41,7 @@ class AgentQueryToolsTest {
 
     @Test
     fun `DocumentQueryTool returns answer with sources`() = runBlocking {
-        val documentRagService = mockk<DocumentRagService>()
+        val documentRagService = mockk<DocumentRagUseCase>()
         every { documentRagService.query(any()) } returns DocumentRagResult(
             sessionId = UUID.randomUUID(),
             answer = "Photosynthesis is described in chapter 3.",

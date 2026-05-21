@@ -2,7 +2,8 @@ package com.agentwork.graphmesh.extraction.definition
 
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.message.Message
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
+import com.agentwork.graphmesh.provenance.application.port.`in`.ProvenanceUseCases
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.storage.ObjectType
 import com.agentwork.graphmesh.storage.QuadStore
@@ -126,10 +127,17 @@ class DefinitionExtractorServiceTest {
     fun `extract generates knowledge label and provenance quads`() {
         val promptExecutor = mockk<PromptExecutor>()
         val quadStore = mockk<QuadStore>(relaxed = true)
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
 
-        val provenanceService = mockk<com.agentwork.graphmesh.provenance.ProvenanceService>(relaxed = true)
-        every { provenanceService.buildSubgraphQuads(any()) } returns emptyList()
+        val provenanceService = mockk<ProvenanceUseCases>(relaxed = true)
+        every { provenanceService.buildSubgraphQuads(any()) } returns listOf(
+            com.agentwork.graphmesh.rdf.Quad(
+                subject = com.agentwork.graphmesh.rdf.RdfTerm.Uri(EntityIdGenerator.generate("Photosynthesis").value),
+                predicate = com.agentwork.graphmesh.rdf.RdfTerm.Uri("http://graphmesh.io/ontology/extractedFrom"),
+                objectTerm = com.agentwork.graphmesh.rdf.RdfTerm.Uri("urn:chunk:chunk-1"),
+                graph = com.agentwork.graphmesh.rdf.NamedGraph.SOURCE
+            )
+        )
         val service = DefinitionExtractorService(promptExecutor, quadStore, librarianService, provenanceService, "gpt-4o")
 
         every { librarianService.getContent("chunk-1") } returns
@@ -176,9 +184,9 @@ class DefinitionExtractorServiceTest {
     fun `extract returns zero result for blank chunk text`() {
         val promptExecutor = mockk<PromptExecutor>()
         val quadStore = mockk<QuadStore>()
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
 
-        val provenanceService = mockk<com.agentwork.graphmesh.provenance.ProvenanceService>(relaxed = true)
+        val provenanceService = mockk<ProvenanceUseCases>(relaxed = true)
         every { provenanceService.buildSubgraphQuads(any()) } returns emptyList()
         val service = DefinitionExtractorService(promptExecutor, quadStore, librarianService, provenanceService, "gpt-4o")
 
@@ -194,9 +202,9 @@ class DefinitionExtractorServiceTest {
     fun `extract deduplicates label quads by subject`() {
         val promptExecutor = mockk<PromptExecutor>()
         val quadStore = mockk<QuadStore>(relaxed = true)
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
 
-        val provenanceService = mockk<com.agentwork.graphmesh.provenance.ProvenanceService>(relaxed = true)
+        val provenanceService = mockk<ProvenanceUseCases>(relaxed = true)
         every { provenanceService.buildSubgraphQuads(any()) } returns emptyList()
         val service = DefinitionExtractorService(promptExecutor, quadStore, librarianService, provenanceService, "gpt-4o")
 

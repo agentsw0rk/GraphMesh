@@ -1,13 +1,13 @@
 package com.agentwork.graphmesh.dynamicgraphql
 
 import com.agentwork.graphmesh.collection.CollectionOntologyRecord
-import com.agentwork.graphmesh.collection.CollectionOntologyService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionOntologyUseCases
 import com.agentwork.graphmesh.ontology.DatatypeProperty
 import com.agentwork.graphmesh.ontology.ObjectProperty
 import com.agentwork.graphmesh.ontology.Ontology
-import com.agentwork.graphmesh.ontology.OntologyCache
 import com.agentwork.graphmesh.ontology.OntologyClass
 import com.agentwork.graphmesh.ontology.OntologyMetadata
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.rdf.XsdTypes
 import com.agentwork.graphmesh.storage.QuadStore
 import io.mockk.every
@@ -20,12 +20,12 @@ import kotlin.test.assertTrue
 class DynamicGraphQlSchemaBuilderTest {
 
     private val quadStore = mockk<QuadStore>()
-    private val ontologyCache = mockk<OntologyCache>()
-    private val collectionOntologyService = mockk<CollectionOntologyService>()
+    private val ontologyUseCases = mockk<OntologyUseCases>()
+    private val collectionOntologyService = mockk<CollectionOntologyUseCases>()
     private val registry = DynamicGraphQlRegistry()
 
     private val builder = DynamicGraphQlSchemaBuilder(
-        quadStore, ontologyCache, collectionOntologyService, registry
+        quadStore, ontologyUseCases, collectionOntologyService, registry
     )
 
     private val personOntology = Ontology(
@@ -49,7 +49,7 @@ class DynamicGraphQlSchemaBuilderTest {
         every { collectionOntologyService.listForCollection("col-1") } returns listOf(
             CollectionOntologyRecord("col-1", "test", "primary", Instant.now(), "user")
         )
-        every { ontologyCache.get("test") } returns personOntology
+        every { ontologyUseCases.get("test") } returns personOntology
         builder.rebuildIfOntologyAssigned("col-1")
         assertTrue(registry.has("col-1"))
     }
@@ -66,7 +66,7 @@ class DynamicGraphQlSchemaBuilderTest {
         every { collectionOntologyService.listForCollection("col-1") } returns listOf(
             CollectionOntologyRecord("col-1", "test", "primary", Instant.now(), "user")
         )
-        every { ontologyCache.get("test") } returns personOntology
+        every { ontologyUseCases.get("test") } returns personOntology
         builder.rebuildIfOntologyAssigned("col-1")
         val schema = registry.get("col-1")!!.graphQLSchema
         val queryType = schema.queryType
@@ -81,7 +81,7 @@ class DynamicGraphQlSchemaBuilderTest {
         every { collectionOntologyService.listForCollection("col-1") } returns listOf(
             CollectionOntologyRecord("col-1", "test", "primary", Instant.now(), "user")
         )
-        every { ontologyCache.get("test") } returns personOntology
+        every { ontologyUseCases.get("test") } returns personOntology
         builder.rebuildIfOntologyAssigned("col-1")
         val schema = registry.get("col-1")!!.graphQLSchema
         val personType = schema.getObjectType("Person")
@@ -97,7 +97,7 @@ class DynamicGraphQlSchemaBuilderTest {
         every { collectionOntologyService.listForCollection("col-1") } returns listOf(
             CollectionOntologyRecord("col-1", "test", "primary", Instant.now(), "user")
         )
-        every { ontologyCache.get("test") } returns personOntology
+        every { ontologyUseCases.get("test") } returns personOntology
         builder.rebuildIfOntologyAssigned("col-1")
         val first = registry.get("col-1")
         builder.rebuildIfOntologyAssigned("col-1")
