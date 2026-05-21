@@ -1,6 +1,7 @@
 package com.agentwork.graphmesh.query.nlp
 
 import com.agentwork.graphmesh.llm.resolveLlmModel
+import com.agentwork.graphmesh.query.nlp.application.port.`in`.NlpQueryUseCase
 
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
@@ -31,11 +32,11 @@ class NlpQueryService(
     private val cachedEmbeddingService: CachedEmbeddingService,
     private val quadStore: QuadStore,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val llmModelName: String
-) {
+) : NlpQueryUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun query(query: NlpQuery): NlpQueryResult {
+    override fun query(query: NlpQuery): NlpQueryResult {
         val startTime = System.currentTimeMillis()
 
         // Step 1: Intent Detection + Embedding (parallel when MIXED)
