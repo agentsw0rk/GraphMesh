@@ -4,6 +4,9 @@ scope: backend
 layer: coding
 priority: high
 appliesTo: spring-modulith
+paths:
+  - "src/main/kotlin/com/agentwork/graphmesh/**"
+  - "src/test/kotlin/**"
 description: Hexagonal architecture structure, dependency rules, and naming conventions.
 ---
 
@@ -33,9 +36,8 @@ Shared types used by multiple features → `com.agentwork.graphmesh.common.domai
 3. **`application/`** → own `domain/` and `common/domain`. May use `llm/`, `tenant/`. Never depends on `adapter/`.
 4. **`adapter/out/`** → implements `application/port/out/`. May use `domain/` models. Never calls `application/` services.
 5. **`adapter/in/`** → `application/port/in/` interfaces only. Never instantiates concrete `*Service` classes.
-6. **Cross-feature** → only via target feature's `application/port/in/`. No access to foreign `domain/`, `adapter/`, or service class. No exemptions (including global orchestrators like `PurgeService`).
-7. **Use cases don't call use cases.** Cross-feature orchestration via Spring events or a dedicated orchestration feature.
-8. **Global `api/` (transitional)** → controllers depend on `port/in/` interfaces only, never concrete services.
+
+Cross-module concerns — cross-feature access, use-case orchestration, and the transitional global `api/` rule — are module boundaries; see `spring-modulith.md`.
 
 ## Naming
 

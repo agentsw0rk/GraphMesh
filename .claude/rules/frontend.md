@@ -4,19 +4,21 @@ scope: frontend
 layer: coding
 priority: medium
 appliesTo: nextjs
-description: Struktur, Datenzugriff und Styling-Regeln für das Next.js-Frontend.
+paths:
+  - "frontend/**"
+description: Structure, data access, and styling rules for the Next.js frontend.
 ---
 
 # Frontend Rules (Next.js 14)
 
-- Struktur:
-    - Nutze den App Router (`frontend/src/app/...`) für neue Pages/Routes.
-    - Wiederverwendbare UI-Bausteine unter `frontend/src/components/...`.
-    - Helpers, Hooks, API-Clients unter `frontend/src/lib/...` oder analog bestehender Struktur.
-- Datenzugriff:
-    - GraphQL-Zugriffe laufen über eine zentrale Apollo-Client-Instanz.
-    - Keine direkten `fetch`-Calls auf GraphQL-Endpunkte.
+- Structure:
+    - Use the App Router (`frontend/src/app/...`) for new pages/routes.
+    - Reusable UI building blocks under `frontend/src/components/...`.
+    - Helpers, hooks, API clients under `frontend/src/lib/...` or analogous to the existing structure.
+- Data access:
+    - GraphQL access goes through a central Apollo client instance.
+    - No direct `fetch` calls to GraphQL endpoints.
 - Styling:
-    - Tailwind für Layout & Utilities.
-    - shadcn/ui als Basis für Standard-Komponenten.
-    - Neue Komponenten orientieren sich an bestehenden Patterns (Props, Struktur, Styling).
+    - Tailwind for layout & utilities.
+    - shadcn/ui as the base for standard components.
+    - New components follow existing patterns (props, structure, styling).

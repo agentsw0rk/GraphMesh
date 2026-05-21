@@ -4,16 +4,16 @@ scope: infra
 layer: architecture
 priority: high
 appliesTo: monorepo
-description: Regeln für Projektstruktur, Ordnerlayout und Grenzen im Monorepo.
+description: Rules for project structure, folder layout, and boundaries in the monorepo.
 ---
 
 # Monorepo Rules
 
-- Du arbeitest in einem Monorepo mit:
+- You work in a monorepo with:
     - Backend: `src/main/kotlin/com/agentwork/graphmesh/...`
     - Frontend: `frontend/` (Next.js 14)
     - Docs: `docs/`
     - Infra: `docker-compose.yaml`
-- Lege **keine** neuen Gradle-Submodule an; das Backend bleibt ein Spring Modulith in einem JAR.
-- Halte dich an die existierenden Top-Level-Ordner, statt neue „Sidecar“-Projekte anzulegen.
-- Wenn du neue Bereiche brauchst, schlage zuerst eine Erweiterung der Monorepo-Struktur vor, bevor du Verzeichnisse erfindest.
+- Do **not** create new Gradle submodules; the backend stays a single Spring Modulith JAR.
+- Stick to the existing top-level folders instead of creating new "sidecar" projects.
+- If you need new areas, first propose an extension of the monorepo structure before inventing directories.
