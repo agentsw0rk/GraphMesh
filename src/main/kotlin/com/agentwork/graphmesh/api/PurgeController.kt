@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.api
 
-import com.agentwork.graphmesh.storage.OrphanSweepService
+import com.agentwork.graphmesh.storage.application.port.`in`.OrphanSweepResult
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
 
@@ -13,5 +13,5 @@ class PurgeController(
     fun purgeAllData(): PurgeService.PurgeResult = purgeService.purgeAll()
 
     @MutationMapping
-    fun purgeOrphans(): OrphanSweepService.Result = purgeService.purgeOrphansOnly()
+    fun purgeOrphans(): OrphanSweepResult = purgeService.purgeOrphansOnly()
 }

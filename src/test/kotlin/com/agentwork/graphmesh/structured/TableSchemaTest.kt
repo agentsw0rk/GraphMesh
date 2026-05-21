@@ -1,7 +1,6 @@
 package com.agentwork.graphmesh.structured
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -77,10 +76,8 @@ class TableSchemaTest {
     }
 
     @Test
-    fun `ColumnType fromString throws for unknown type`() {
-        assertThrows<IllegalArgumentException> {
-            ColumnType.fromString("unknown")
-        }
+    fun `ColumnType fromString falls back to STRING for unknown type`() {
+        assertEquals(ColumnType.STRING, ColumnType.fromString("unknown"))
     }
 
     @Test

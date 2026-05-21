@@ -1,5 +1,6 @@
 package com.agentwork.graphmesh.collection
 
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionOntologyUseCases
 import com.datastax.oss.driver.api.core.CqlSession
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -10,11 +11,11 @@ import java.time.Instant
 class CollectionOntologyService(
     private val session: CqlSession,
     @Value("\${graphmesh.cassandra.keyspace}") private val keyspace: String
-) {
+) : CollectionOntologyUseCases {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun assign(collectionId: String, ontologyKey: String, role: String, assignedBy: String): CollectionOntologyRecord {
+    override fun assign(collectionId: String, ontologyKey: String, role: String, assignedBy: String): CollectionOntologyRecord {
         val now = Instant.now()
         session.execute(
             "INSERT INTO $keyspace.collection_ontologies (collection_id, ontology_key, role, assigned_at, assigned_by) " +
@@ -24,14 +25,14 @@ class CollectionOntologyService(
         return CollectionOntologyRecord(collectionId, ontologyKey, role, now, assignedBy)
     }
 
-    fun unassign(collectionId: String, ontologyKey: String) {
+    override fun unassign(collectionId: String, ontologyKey: String) {
         session.execute(
             "DELETE FROM $keyspace.collection_ontologies WHERE collection_id = '$collectionId' AND ontology_key = '$ontologyKey'"
         )
         logger.info("Unassigned ontology '{}' from collection '{}'", ontologyKey, collectionId)
     }
 
-    fun listForCollection(collectionId: String): List<CollectionOntologyRecord> {
+    override fun listForCollection(collectionId: String): List<CollectionOntologyRecord> {
         val rs = session.execute(
             "SELECT ontology_key, role, assigned_at, assigned_by FROM $keyspace.collection_ontologies WHERE collection_id = '$collectionId'"
         )

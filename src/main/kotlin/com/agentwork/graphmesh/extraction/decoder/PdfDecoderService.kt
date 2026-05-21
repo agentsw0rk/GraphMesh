@@ -2,7 +2,8 @@ package com.agentwork.graphmesh.extraction.decoder
 
 import com.agentwork.graphmesh.librarian.DocumentState
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.CreateChildDocumentUseCase
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.io.RandomAccessReadBuffer
 import org.apache.pdfbox.text.PDFTextStripper
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class PdfDecoderService(
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
+    private val createChildDocumentUseCase: CreateChildDocumentUseCase,
     private val pageExtractedProducer: PageExtractedProducer
 ) {
 
@@ -28,7 +30,7 @@ class PdfDecoderService(
             val pages = extractPages(pdfContent)
 
             for (result in pages) {
-                val pageDoc = librarianService.createChildDocument(
+                val pageDoc = createChildDocumentUseCase.createChildDocument(
                     parentId = documentId,
                     type = DocumentType.PAGE,
                     title = "Page ${result.pageNumber}",

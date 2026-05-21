@@ -1,5 +1,8 @@
 package com.agentwork.graphmesh.ontology
 
+import com.agentwork.graphmesh.ontology.application.port.`in`.ImportRdfXmlOntologyUseCase
+import com.agentwork.graphmesh.ontology.application.port.`in`.ImportTurtleOntologyUseCase
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -8,18 +11,20 @@ import java.util.Base64
 
 @Controller
 class OntologyController(
-    private val ontologyService: OntologyService,
+    private val ontologyUseCases: OntologyUseCases,
+    private val importTurtleOntologyUseCase: ImportTurtleOntologyUseCase,
+    private val importRdfXmlOntologyUseCase: ImportRdfXmlOntologyUseCase,
 ) {
 
     @QueryMapping
     fun listOntologies(): List<OntologyInfoPayload> =
-        ontologyService.list().mapNotNull { key ->
-            ontologyService.get(key)?.toPayload(key)
+        ontologyUseCases.list().mapNotNull { key ->
+            ontologyUseCases.get(key)?.toPayload(key)
         }
 
     @QueryMapping
     fun ontology(@Argument key: String): OntologyInfoPayload? =
-        ontologyService.get(key)?.toPayload(key)
+        ontologyUseCases.get(key)?.toPayload(key)
 
     @MutationMapping
     fun importOntology(@Argument input: ImportOntologyInput): OntologyInfoPayload {
@@ -30,15 +35,15 @@ class OntologyController(
             version = input.version,
         )
         val ontology = when (input.format) {
-            OntologyFormat.TURTLE -> ontologyService.importTurtle(input.key, content, metadata)
-            OntologyFormat.RDFXML -> ontologyService.importRdfXml(input.key, content, metadata)
+            OntologyFormat.TURTLE -> importTurtleOntologyUseCase.importTurtle(input.key, content, metadata)
+            OntologyFormat.RDFXML -> importRdfXmlOntologyUseCase.importRdfXml(input.key, content, metadata)
         }
         return ontology.toPayload(input.key)
     }
 
     @MutationMapping
     fun deleteOntology(@Argument key: String): Boolean {
-        ontologyService.delete(key)
+        ontologyUseCases.delete(key)
         return true
     }
 

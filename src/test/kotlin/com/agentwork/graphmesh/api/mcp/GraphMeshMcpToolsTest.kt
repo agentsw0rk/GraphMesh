@@ -1,19 +1,19 @@
 package com.agentwork.graphmesh.api.mcp
 
 import com.agentwork.graphmesh.collection.Collection
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
 import com.agentwork.graphmesh.librarian.Document
 import com.agentwork.graphmesh.librarian.DocumentState
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
 import com.agentwork.graphmesh.query.docrag.DocumentRagResult
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
 import com.agentwork.graphmesh.query.docrag.SourceAttribution
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
 import com.agentwork.graphmesh.query.graphrag.GraphRagResult
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
 import com.agentwork.graphmesh.query.graphrag.SelectedEdge
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -24,10 +24,10 @@ import kotlin.test.assertTrue
 
 class GraphMeshMcpToolsTest {
 
-    private val graphRagService = mockk<GraphRagService>()
-    private val documentRagService = mockk<DocumentRagService>()
-    private val collectionService = mockk<CollectionService>()
-    private val librarianService = mockk<LibrarianService>()
+    private val graphRagService = mockk<GraphRagUseCase>()
+    private val documentRagService = mockk<DocumentRagUseCase>()
+    private val collectionService = mockk<CollectionUseCases>()
+    private val librarianService = mockk<LibrarianUseCases>()
 
     private val tools = GraphMeshMcpTools(
         graphRagService, documentRagService, collectionService, librarianService

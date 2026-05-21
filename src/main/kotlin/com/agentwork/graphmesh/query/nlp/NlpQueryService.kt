@@ -1,6 +1,7 @@
 package com.agentwork.graphmesh.query.nlp
 
 import com.agentwork.graphmesh.llm.resolveLlmModel
+import com.agentwork.graphmesh.query.nlp.application.port.`in`.NlpQueryUseCase
 
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
@@ -9,9 +10,9 @@ import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.query.CachedEmbeddingService
 import com.agentwork.graphmesh.query.CollectionContentTypeService
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import com.agentwork.graphmesh.storage.QuadQuery
 import com.agentwork.graphmesh.storage.QuadStore
 import kotlinx.coroutines.async
@@ -25,17 +26,17 @@ import org.springframework.stereotype.Service
 @Service
 class NlpQueryService(
     private val promptExecutor: PromptExecutor,
-    private val graphRagService: GraphRagService,
-    private val documentRagService: DocumentRagService,
+    private val graphRagService: GraphRagUseCase,
+    private val documentRagService: DocumentRagUseCase,
     private val contentTypeService: CollectionContentTypeService,
     private val cachedEmbeddingService: CachedEmbeddingService,
     private val quadStore: QuadStore,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val llmModelName: String
-) {
+) : NlpQueryUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun query(query: NlpQuery): NlpQueryResult {
+    override fun query(query: NlpQuery): NlpQueryResult {
         val startTime = System.currentTimeMillis()
 
         // Step 1: Intent Detection + Embedding (parallel when MIXED)

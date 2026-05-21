@@ -2,9 +2,9 @@ package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.agent.AgentQueryConfig
 import com.agentwork.graphmesh.agent.AgentQueryResult
-import com.agentwork.graphmesh.agent.AgentService
 import com.agentwork.graphmesh.agent.ToolGroup
 import com.agentwork.graphmesh.agent.ToolInfo
+import com.agentwork.graphmesh.agent.application.port.`in`.AgentUseCases
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -16,7 +16,7 @@ class AgentControllerTest {
 
     @Test
     fun `askAgent delegates to agent service`() {
-        val agentService = mockk<AgentService>()
+        val agentService = mockk<AgentUseCases>()
         every { agentService.query("What is X?", "col-1", any(), any()) } returns AgentQueryResult(
             sessionId = UUID.randomUUID(),
             answer = "X is a concept.",
@@ -35,7 +35,7 @@ class AgentControllerTest {
 
     @Test
     fun `askAgent passes custom maxIterations`() {
-        val agentService = mockk<AgentService>()
+        val agentService = mockk<AgentUseCases>()
         every { agentService.query(any(), any(), any(), any()) } returns AgentQueryResult(
             sessionId = UUID.randomUUID(), answer = "Answer", durationMs = 100
         )
@@ -50,7 +50,7 @@ class AgentControllerTest {
 
     @Test
     fun `askAgent passes allowedGroups`() {
-        val agentService = mockk<AgentService>()
+        val agentService = mockk<AgentUseCases>()
         every { agentService.query(any(), any(), any(), any()) } returns AgentQueryResult(
             sessionId = UUID.randomUUID(), answer = "Answer", durationMs = 100
         )
@@ -65,7 +65,7 @@ class AgentControllerTest {
 
     @Test
     fun `agentTools returns available tools with groups`() {
-        val agentService = mockk<AgentService>()
+        val agentService = mockk<AgentUseCases>()
         every { agentService.getAvailableTools() } returns listOf(
             ToolInfo("knowledge_query", "Query the knowledge graph", listOf("all", "basic")),
             ToolInfo("document_query", "Search documents", listOf("all", "advanced"))
@@ -81,7 +81,7 @@ class AgentControllerTest {
 
     @Test
     fun `toolGroups returns all groups`() {
-        val agentService = mockk<AgentService>()
+        val agentService = mockk<AgentUseCases>()
         every { agentService.getToolGroups() } returns listOf(
             ToolGroup("all", "All tools", setOf("knowledge_query", "document_query")),
             ToolGroup("basic", "Basic tools", setOf("knowledge_query"))

@@ -1,5 +1,7 @@
 package com.agentwork.graphmesh.config
 
+import com.agentwork.graphmesh.config.application.port.`in`.ConfigUseCases
+import com.agentwork.graphmesh.config.application.port.`in`.SaveConfigUseCase
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -10,11 +12,11 @@ class ConfigService(
     private val store: ConfigStore,
     private val eventPublisher: ApplicationEventPublisher,
     private val configChangeProducer: ConfigChangeProducer
-) {
+) : ConfigUseCases, SaveConfigUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun save(item: ConfigItem): ConfigItem {
+    override fun saveConfig(item: ConfigItem): ConfigItem {
         val existing = store.findById(item.id)
         val action = if (existing == null) ConfigAction.CREATED else ConfigAction.UPDATED
         val version = (existing?.version ?: 0) + 1
@@ -33,24 +35,24 @@ class ConfigService(
         return saved
     }
 
-    fun findById(id: String): ConfigItem? = store.findById(id)
+    override fun findById(id: String): ConfigItem? = store.findById(id)
 
-    fun findByType(type: ConfigType): List<ConfigItem> = store.findByType(type)
+    override fun findByType(type: ConfigType): List<ConfigItem> = store.findByType(type)
 
-    fun findByTypeAndKey(type: ConfigType, key: String): ConfigItem? = store.findByTypeAndKey(type, key)
+    override fun findByTypeAndKey(type: ConfigType, key: String): ConfigItem? = store.findByTypeAndKey(type, key)
 
     /**
      * Returns all config items across every [ConfigType].
      * If [type] is non-null, restricts results to that type.
      */
-    fun findAll(type: ConfigType? = null): List<ConfigItem> {
+    override fun findAll(type: ConfigType?): List<ConfigItem> {
         if (type != null) return store.findByType(type)
         return ConfigType.values().flatMap { store.findByType(it) }
     }
 
-    fun history(id: String, limit: Int = 10): List<ConfigItem> = store.history(id, limit)
+    override fun history(id: String, limit: Int): List<ConfigItem> = store.history(id, limit)
 
-    fun delete(id: String) {
+    override fun delete(id: String) {
         val item = store.findById(id) ?: return
         store.delete(id)
 

@@ -1,10 +1,11 @@
 package com.agentwork.graphmesh.query.docrag
 
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.llm.resolveLlmModel
 
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.query.CachedEmbeddingService
 import com.agentwork.graphmesh.messaging.ExplainabilityEventProducer
 import com.agentwork.graphmesh.storage.vector.VectorStore
@@ -19,15 +20,15 @@ import java.util.UUID
 class DocumentRagService(
     private val cachedEmbeddingService: CachedEmbeddingService,
     private val vectorStore: VectorStore,
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
     private val promptExecutor: PromptExecutor,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val llmModelName: String,
     private val explainabilityProducer: ExplainabilityEventProducer
-) {
+) : DocumentRagUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun query(query: DocumentRagQuery): DocumentRagResult {
+    override fun query(query: DocumentRagQuery): DocumentRagResult {
         val sessionId = UUID.randomUUID()
         val startTime = System.currentTimeMillis()
 

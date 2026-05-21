@@ -4,11 +4,11 @@ import com.agentwork.graphmesh.ontology.LangLabel
 import com.agentwork.graphmesh.ontology.Ontology
 import com.agentwork.graphmesh.ontology.OntologyClass
 import com.agentwork.graphmesh.ontology.OntologyMetadata
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.skos.SkosConcept
 import com.agentwork.graphmesh.skos.SkosConceptScheme
-import com.agentwork.graphmesh.skos.SkosService
+import com.agentwork.graphmesh.skos.application.port.`in`.SkosUseCases
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -17,8 +17,8 @@ import kotlin.test.assertTrue
 
 class TopicOntologyMatcherTest {
 
-    private val ontologyService = mockk<OntologyService>()
-    private val skosService = mockk<SkosService>()
+    private val ontologyService = mockk<OntologyUseCases>()
+    private val skosService = mockk<SkosUseCases>()
     private val matcher = TopicOntologyMatcher(ontologyService, skosService)
 
     @Test

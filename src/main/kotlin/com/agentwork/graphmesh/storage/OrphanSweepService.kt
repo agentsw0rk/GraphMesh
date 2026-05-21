@@ -1,5 +1,7 @@
 package com.agentwork.graphmesh.storage
 
+import com.agentwork.graphmesh.storage.application.port.`in`.OrphanSweepResult
+import com.agentwork.graphmesh.storage.application.port.`in`.OrphanSweepUseCase
 import com.agentwork.graphmesh.storage.blob.BlobStore
 import com.datastax.oss.driver.api.core.CqlSession
 import io.qdrant.client.QdrantClient
@@ -19,17 +21,11 @@ class OrphanSweepService(
     private val blobStore: BlobStore,
     @Value("\${graphmesh.cassandra.keyspace}") private val keyspace: String,
     @Value("\${graphmesh.storage.blob.default-bucket:graphmesh}") private val defaultBucket: String,
-) {
+) : OrphanSweepUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    data class Result(
-        val quadTablesTruncated: Int,
-        val vectorCollectionsDeleted: Int,
-        val blobsDeleted: Int,
-    )
-
-    fun sweep(): Result {
+    override fun sweep(): OrphanSweepResult {
         var quadTables = 0
         try {
             cqlSession.execute("TRUNCATE $keyspace.quads_by_entity")
@@ -65,6 +61,6 @@ class OrphanSweepService(
             logger.warn("Orphan sweep: blob delete failed: {}", e.message)
         }
 
-        return Result(quadTables, vectorColls, orphanBlobs)
+        return OrphanSweepResult(quadTables, vectorColls, orphanBlobs)
     }
 }

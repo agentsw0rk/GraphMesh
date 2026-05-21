@@ -1,7 +1,11 @@
 package com.agentwork.graphmesh.contextcore
 
+import com.agentwork.graphmesh.contextcore.application.port.`in`.BuildContextCoreUseCase
+import com.agentwork.graphmesh.contextcore.application.port.`in`.ContextCoreUseCases
+import com.agentwork.graphmesh.contextcore.application.port.`in`.ImportContextCoreUseCase
 import com.agentwork.graphmesh.ontology.OntologyMetadata
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.ontology.application.port.`in`.ImportTurtleOntologyUseCase
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.storage.QuadStore
 import com.agentwork.graphmesh.storage.blob.BlobStore
 import com.agentwork.graphmesh.storage.vector.CollectionNaming
@@ -16,10 +20,11 @@ import java.time.Instant
 class ContextCoreService(
     private val quadStore: QuadStore,
     private val vectorStore: VectorStore,
-    private val ontologyService: OntologyService,
+    private val ontologyUseCases: OntologyUseCases,
+    private val importTurtleOntologyUseCase: ImportTurtleOntologyUseCase,
     private val blobStore: BlobStore,
     private val registry: ContextCoreRegistry
-) {
+) : ContextCoreUseCases, BuildContextCoreUseCase, ImportContextCoreUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val mapper = jacksonObjectMapper().apply { findAndRegisterModules() }
@@ -33,7 +38,7 @@ class ContextCoreService(
         private const val BUCKET = "graphmesh-context-cores"
     }
 
-    fun build(request: BuildRequest): CoreManifest {
+    override fun buildContextCore(request: BuildRequest): CoreManifest {
         logger.info("Building context core: coreId={}, version={}, source={}",
             request.coreId, request.version, request.sourceCollection)
 
@@ -42,7 +47,7 @@ class ContextCoreService(
 
         val ontologyTtl = if (request.ontologyKey != null) {
             try {
-                ontologyService.exportTurtle(request.ontologyKey)
+                ontologyUseCases.exportTurtle(request.ontologyKey)
             } catch (e: Exception) {
                 logger.warn("Failed to export ontology '{}': {}", request.ontologyKey, e.message)
                 ""
@@ -86,7 +91,7 @@ class ContextCoreService(
         return finalManifest
     }
 
-    fun import(request: ImportRequest): ImportResult {
+    override fun importContextCore(request: ImportRequest): ImportResult {
         val record = registry.find(request.coreId, request.version)
             ?: error("Unknown context core: ${request.coreId}@${request.version}")
 
@@ -125,7 +130,7 @@ class ContextCoreService(
         val ontologyTtl = reader.readOntology()
         if (ontologyTtl.isNotBlank()) {
             try {
-                ontologyService.importTurtle(
+                importTurtleOntologyUseCase.importTurtle(
                     "${request.coreId}-${request.version}",
                     ontologyTtl,
                     OntologyMetadata(
@@ -148,20 +153,20 @@ class ContextCoreService(
         )
     }
 
-    fun list(): List<CoreManifest> = registry.listAll().map { it.manifest }
+    override fun list(): List<CoreManifest> = registry.listAll().map { it.manifest }
 
-    fun find(coreId: String, version: String): CoreManifest? = registry.find(coreId, version)?.manifest
+    override fun find(coreId: String, version: String): CoreManifest? = registry.find(coreId, version)?.manifest
 
-    fun findByTag(coreId: String, tag: String): CoreManifest? = registry.findByTag(coreId, tag)?.manifest
+    override fun findByTag(coreId: String, tag: String): CoreManifest? = registry.findByTag(coreId, tag)?.manifest
 
-    fun delete(coreId: String, version: String) {
+    override fun delete(coreId: String, version: String) {
         val record = registry.find(coreId, version) ?: return
         blobStore.delete(BUCKET, record.blobKey)
         registry.unregister(coreId, version)
         logger.info("Context core deleted: {}@{}", coreId, version)
     }
 
-    fun tag(coreId: String, version: String, tag: String): CoreManifest? {
+    override fun tag(coreId: String, version: String, tag: String): CoreManifest? {
         registry.addTag(coreId, version, tag)
         return registry.find(coreId, version)?.manifest
     }

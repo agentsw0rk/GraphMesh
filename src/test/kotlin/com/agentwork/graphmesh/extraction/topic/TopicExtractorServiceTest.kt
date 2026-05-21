@@ -2,8 +2,8 @@ package com.agentwork.graphmesh.extraction.topic
 
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.message.Message
-import com.agentwork.graphmesh.librarian.LibrarianService
-import com.agentwork.graphmesh.provenance.ProvenanceService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
+import com.agentwork.graphmesh.provenance.application.port.`in`.ProvenanceUseCases
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.rdf.SkosTypes
 import com.agentwork.graphmesh.storage.ObjectType
@@ -21,8 +21,8 @@ class TopicExtractorServiceTest {
 
     private val promptExecutor = mockk<PromptExecutor>()
     private val quadStore = mockk<QuadStore>(relaxed = true)
-    private val librarianService = mockk<LibrarianService>()
-    private val provenanceService = mockk<ProvenanceService>(relaxed = true)
+    private val librarianService = mockk<LibrarianUseCases>()
+    private val provenanceService = mockk<ProvenanceUseCases>(relaxed = true)
     private val ontologyMatcher = mockk<TopicOntologyMatcher>()
 
     private fun buildService(minConfidence: Double = 0.5): TopicExtractorService =

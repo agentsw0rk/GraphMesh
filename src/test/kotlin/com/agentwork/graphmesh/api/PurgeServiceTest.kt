@@ -1,13 +1,14 @@
 package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.collection.Collection
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
+import com.agentwork.graphmesh.collection.application.port.`in`.DeleteCollectionUseCase
 import com.agentwork.graphmesh.librarian.Document
 import com.agentwork.graphmesh.librarian.DocumentState
 import com.agentwork.graphmesh.librarian.DocumentStore
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.ontology.OntologyService
-import com.agentwork.graphmesh.storage.OrphanSweepService
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
+import com.agentwork.graphmesh.storage.application.port.`in`.OrphanSweepUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,13 +24,14 @@ import kotlin.test.assertEquals
 
 class PurgeServiceTest {
 
-    private val collectionService = mockk<CollectionService>(relaxed = true)
+    private val collectionService = mockk<CollectionUseCases>(relaxed = true)
+    private val deleteCollectionUseCase = mockk<DeleteCollectionUseCase>(relaxed = true)
     private val documentStore = mockk<DocumentStore>(relaxed = true)
-    private val ontologyService = mockk<OntologyService>(relaxed = true)
+    private val ontologyService = mockk<OntologyUseCases>(relaxed = true)
     private val kafkaAdmin = mockk<KafkaAdmin>()
-    private val orphanSweepService = mockk<OrphanSweepService>(relaxed = true)
+    private val orphanSweepService = mockk<OrphanSweepUseCase>(relaxed = true)
 
-    private val service = PurgeService(collectionService, documentStore, ontologyService, kafkaAdmin, orphanSweepService)
+    private val service = PurgeService(collectionService, deleteCollectionUseCase, documentStore, ontologyService, kafkaAdmin, orphanSweepService)
 
     private fun collection(id: String, name: String) = Collection(
         id = id, name = name, description = "", tags = emptySet(),
@@ -65,7 +67,7 @@ class PurgeServiceTest {
 
         verifyOrder {
             documentStore.deleteWithChildren("d1")
-            collectionService.delete("c1")
+            deleteCollectionUseCase.deleteCollection("c1")
         }
         verify { ontologyService.delete("ont-1") }
         verify { ontologyService.delete("ont-2") }

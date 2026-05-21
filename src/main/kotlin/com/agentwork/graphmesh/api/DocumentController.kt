@@ -2,7 +2,9 @@ package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.librarian.Document
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.DeleteDocumentUseCase
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
+import com.agentwork.graphmesh.librarian.application.port.`in`.UploadDocumentUseCase
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -12,7 +14,9 @@ import java.util.Base64
 
 @Controller
 class DocumentController(
-    private val librarianService: LibrarianService
+    private val librarianService: LibrarianUseCases,
+    private val uploadDocumentUseCase: UploadDocumentUseCase,
+    private val deleteDocumentUseCase: DeleteDocumentUseCase
 ) {
 
     @QueryMapping
@@ -66,7 +70,7 @@ class DocumentController(
     @MutationMapping
     fun uploadDocument(@Argument input: UploadDocumentInput): Document {
         val content = Base64.getDecoder().decode(input.content)
-        return librarianService.uploadDocument(
+        return uploadDocumentUseCase.uploadDocument(
             collectionId = input.collectionId,
             title = input.title,
             mimeType = input.mimeType,
@@ -77,7 +81,7 @@ class DocumentController(
 
     @MutationMapping
     fun deleteDocument(@Argument id: String): Boolean {
-        librarianService.deleteDocument(id)
+        deleteDocumentUseCase.deleteDocument(id)
         return true
     }
 }

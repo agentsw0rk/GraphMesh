@@ -5,7 +5,9 @@ import com.agentwork.graphmesh.librarian.DocumentFilterCriteria
 import com.agentwork.graphmesh.librarian.DocumentPageResult
 import com.agentwork.graphmesh.librarian.DocumentState
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.DeleteDocumentUseCase
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
+import com.agentwork.graphmesh.librarian.application.port.`in`.UploadDocumentUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -15,8 +17,10 @@ import kotlin.test.assertEquals
 
 class DocumentControllerTest {
 
-    private val librarian = mockk<LibrarianService>()
-    private val controller = DocumentController(librarian)
+    private val librarian = mockk<LibrarianUseCases>()
+    private val uploadDocumentUseCase = mockk<UploadDocumentUseCase>()
+    private val deleteDocumentUseCase = mockk<DeleteDocumentUseCase>()
+    private val controller = DocumentController(librarian, uploadDocumentUseCase, deleteDocumentUseCase)
 
     @Test
     fun `documents resolver applies pagination defaults and returns DocumentPagePayload`() {

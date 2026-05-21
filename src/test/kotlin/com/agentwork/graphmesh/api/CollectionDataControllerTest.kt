@@ -1,8 +1,8 @@
 package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.collection.CollectionOntologyRecord
-import com.agentwork.graphmesh.collection.CollectionOntologyService
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionOntologyUseCases
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.storage.QuadStore
 import com.agentwork.graphmesh.storage.QuadStoreStats
 import io.mockk.*
@@ -13,9 +13,9 @@ import kotlin.test.assertTrue
 
 class CollectionDataControllerTest {
 
-    private val ontologyService = mockk<CollectionOntologyService>()
+    private val ontologyService = mockk<CollectionOntologyUseCases>()
     private val quadStore = mockk<QuadStore>()
-    private val ontService = mockk<OntologyService>()
+    private val ontService = mockk<OntologyUseCases>()
     private val controller = CollectionDataController(ontologyService, quadStore, ontService)
 
     @Test

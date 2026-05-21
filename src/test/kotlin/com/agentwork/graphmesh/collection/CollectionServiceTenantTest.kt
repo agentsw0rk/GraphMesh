@@ -98,7 +98,7 @@ class CollectionServiceTenantTest {
 
         every { collectionStore.findByName("New") } returns null
 
-        val result = service.create(name = "New")
+        val result = service.createCollection(name = "New")
         assertEquals("acme", result.tenantId)
         assertEquals("user-1", result.ownerId)
     }
@@ -107,7 +107,7 @@ class CollectionServiceTenantTest {
     fun `create without tenant leaves tenantId null`() {
         every { collectionStore.findByName("New") } returns null
 
-        val result = service.create(name = "New")
+        val result = service.createCollection(name = "New")
         assertEquals(null, result.tenantId)
         assertEquals(null, result.ownerId)
     }

@@ -1,8 +1,9 @@
 package com.agentwork.graphmesh.ontology
 
 import com.agentwork.graphmesh.config.ConfigItem
-import com.agentwork.graphmesh.config.ConfigService
 import com.agentwork.graphmesh.config.ConfigType
+import com.agentwork.graphmesh.config.application.port.`in`.ConfigUseCases
+import com.agentwork.graphmesh.config.application.port.`in`.SaveConfigUseCase
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
 import io.mockk.mockk
@@ -17,8 +18,9 @@ import kotlin.test.assertTrue
 class OntologyStoreTest {
 
     private val objectMapper = jacksonObjectMapper()
-    private val configService = mockk<ConfigService>()
-    private val store = OntologyStore(configService, objectMapper)
+    private val configService = mockk<ConfigUseCases>()
+    private val saveConfigUseCase = mockk<SaveConfigUseCase>()
+    private val store = OntologyStore(configService, saveConfigUseCase, objectMapper)
 
     private val sampleOntology = Ontology(
         metadata = OntologyMetadata(name = "Animals", namespace = "http://example.org/animals/"),
@@ -48,7 +50,7 @@ class OntologyStoreTest {
     fun `save serializes ontology to JSON and stores as ConfigItem`() {
         val itemSlot = slot<ConfigItem>()
         every { configService.findByTypeAndKey(ConfigType.ONTOLOGY, "animals") } returns null
-        every { configService.save(capture(itemSlot)) } answers { itemSlot.captured }
+        every { saveConfigUseCase.saveConfig(capture(itemSlot)) } answers { itemSlot.captured }
 
         store.save("animals", sampleOntology)
 
@@ -72,7 +74,7 @@ class OntologyStoreTest {
         )
         val itemSlot = slot<ConfigItem>()
         every { configService.findByTypeAndKey(ConfigType.ONTOLOGY, "animals") } returns existingItem
-        every { configService.save(capture(itemSlot)) } answers { itemSlot.captured }
+        every { saveConfigUseCase.saveConfig(capture(itemSlot)) } answers { itemSlot.captured }
 
         store.save("animals", sampleOntology)
 

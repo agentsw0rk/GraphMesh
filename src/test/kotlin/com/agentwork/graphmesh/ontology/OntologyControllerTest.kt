@@ -1,5 +1,8 @@
 package com.agentwork.graphmesh.ontology
 
+import com.agentwork.graphmesh.ontology.application.port.`in`.ImportRdfXmlOntologyUseCase
+import com.agentwork.graphmesh.ontology.application.port.`in`.ImportTurtleOntologyUseCase
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -11,8 +14,10 @@ import kotlin.test.assertTrue
 
 class OntologyControllerTest {
 
-    private val service = mockk<OntologyService>()
-    private val controller = OntologyController(service)
+    private val service = mockk<OntologyUseCases>()
+    private val importTurtleUseCase = mockk<ImportTurtleOntologyUseCase>()
+    private val importRdfXmlUseCase = mockk<ImportRdfXmlOntologyUseCase>()
+    private val controller = OntologyController(service, importTurtleUseCase, importRdfXmlUseCase)
 
     private val sampleOntology = Ontology(
         metadata = OntologyMetadata(name = "Test", namespace = "http://test.org/", version = "1.0"),
@@ -56,7 +61,7 @@ class OntologyControllerTest {
     fun `importOntology decodes base64 and delegates to importTurtle`() {
         val turtleContent = "@prefix ex: <http://example.org/> ."
         val encoded = Base64.getEncoder().encodeToString(turtleContent.toByteArray())
-        every { service.importTurtle("ont1", turtleContent, any()) } returns sampleOntology
+        every { importTurtleUseCase.importTurtle("ont1", turtleContent, any()) } returns sampleOntology
 
         val input = ImportOntologyInput(
             key = "ont1",
@@ -68,14 +73,14 @@ class OntologyControllerTest {
         val result = controller.importOntology(input)
 
         assertEquals("ont1", result.key)
-        verify { service.importTurtle("ont1", turtleContent, any()) }
+        verify { importTurtleUseCase.importTurtle("ont1", turtleContent, any()) }
     }
 
     @Test
     fun `importOntology decodes base64 and delegates to importRdfXml`() {
         val xmlContent = "<rdf:RDF/>"
         val encoded = Base64.getEncoder().encodeToString(xmlContent.toByteArray())
-        every { service.importRdfXml("ont2", xmlContent, any()) } returns sampleOntology
+        every { importRdfXmlUseCase.importRdfXml("ont2", xmlContent, any()) } returns sampleOntology
 
         val input = ImportOntologyInput(
             key = "ont2",
@@ -87,7 +92,7 @@ class OntologyControllerTest {
         val result = controller.importOntology(input)
 
         assertEquals("ont2", result.key)
-        verify { service.importRdfXml("ont2", xmlContent, any()) }
+        verify { importRdfXmlUseCase.importRdfXml("ont2", xmlContent, any()) }
     }
 
     @Test

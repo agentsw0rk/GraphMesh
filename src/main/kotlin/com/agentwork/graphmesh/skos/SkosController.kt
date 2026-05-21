@@ -1,12 +1,13 @@
 package com.agentwork.graphmesh.skos
 
+import com.agentwork.graphmesh.skos.application.port.`in`.SkosUseCases
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 
 @Controller
-class SkosController(private val skosService: SkosService) {
+class SkosController(private val skosService: SkosUseCases) {
 
     @QueryMapping
     fun skosConceptSchemes(@Argument collectionId: String): List<SkosConceptScheme> =

@@ -5,7 +5,7 @@ import com.agentwork.graphmesh.llm.resolveLlmModel
 import ai.koog.prompt.executor.clients.LLMEmbeddingProvider
 import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.storage.vector.VectorPayload
 import com.agentwork.graphmesh.storage.vector.VectorPoint
 import com.agentwork.graphmesh.storage.vector.VectorStore
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
 class EmbeddingService(
     private val embeddingProvider: LLMEmbeddingProvider,
     private val vectorStore: VectorStore,
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
     private val config: EmbeddingConfig
 ) {
 

@@ -2,15 +2,15 @@ package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.query.nlp.NlpQuery
 import com.agentwork.graphmesh.query.nlp.NlpQueryResult
-import com.agentwork.graphmesh.query.nlp.NlpQueryService
 import com.agentwork.graphmesh.query.nlp.QueryIntent
+import com.agentwork.graphmesh.query.nlp.application.port.`in`.NlpQueryUseCase
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 
 @Controller
 class NlpQueryController(
-    private val nlpQueryService: NlpQueryService
+    private val nlpQueryService: NlpQueryUseCase
 ) {
 
     @QueryMapping

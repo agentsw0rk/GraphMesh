@@ -38,19 +38,19 @@ class OntologyServiceTest {
     )
 
     @Test
-    fun `save validates and stores when no errors`() {
+    fun `saveOntology validates and stores when no errors`() {
         val configItem = ConfigItem(id = "id-1", type = ConfigType.ONTOLOGY, key = "test", value = "{}")
         every { store.save("test", validOntology) } returns configItem
 
-        val errors = service.save("test", validOntology)
+        val errors = service.saveOntology("test", validOntology)
 
         assertTrue(errors.isEmpty())
         verify { store.save("test", validOntology) }
     }
 
     @Test
-    fun `save returns errors and does not store when validation fails`() {
-        val errors = service.save("test", invalidOntology)
+    fun `saveOntology returns errors and does not store when validation fails`() {
+        val errors = service.saveOntology("test", invalidOntology)
 
         assertTrue(errors.isNotEmpty())
         assertTrue(errors.any { it.rule == ValidationRule.CIRCULAR_INHERITANCE })

@@ -2,13 +2,13 @@ package com.agentwork.graphmesh.extraction.structured
 
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.message.Message
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.structured.ColumnDescriptor
 import com.agentwork.graphmesh.structured.ColumnType
 import com.agentwork.graphmesh.structured.DataRow
 import com.agentwork.graphmesh.structured.StoreResult
-import com.agentwork.graphmesh.structured.StructuredDataService
 import com.agentwork.graphmesh.structured.TableSchema
+import com.agentwork.graphmesh.structured.application.port.`in`.StructuredDataUseCases
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.coEvery
@@ -91,10 +91,10 @@ class StructuredDataExtractorServiceTest {
     @Test
     fun `extract skips chunk with no table detected`() {
         val promptExecutor = mockk<PromptExecutor>()
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
         val tableDetector = mockk<TableDetector>()
         val schemaInferenceService = mockk<SchemaInferenceService>()
-        val structuredDataService = mockk<StructuredDataService>()
+        val structuredDataService = mockk<StructuredDataUseCases>()
 
         val service = StructuredDataExtractorService(
             promptExecutor, tableDetector, schemaInferenceService,
@@ -116,10 +116,10 @@ class StructuredDataExtractorServiceTest {
     @Test
     fun `extract skips chunk with low confidence`() {
         val promptExecutor = mockk<PromptExecutor>()
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
         val tableDetector = mockk<TableDetector>()
         val schemaInferenceService = mockk<SchemaInferenceService>()
-        val structuredDataService = mockk<StructuredDataService>()
+        val structuredDataService = mockk<StructuredDataUseCases>()
 
         val service = StructuredDataExtractorService(
             promptExecutor, tableDetector, schemaInferenceService,
@@ -140,10 +140,10 @@ class StructuredDataExtractorServiceTest {
     @Test
     fun `extract detects table infers new schema and stores rows`() {
         val promptExecutor = mockk<PromptExecutor>()
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
         val tableDetector = mockk<TableDetector>()
         val schemaInferenceService = mockk<SchemaInferenceService>()
-        val structuredDataService = mockk<StructuredDataService>()
+        val structuredDataService = mockk<StructuredDataUseCases>()
 
         val service = StructuredDataExtractorService(
             promptExecutor, tableDetector, schemaInferenceService,
@@ -200,10 +200,10 @@ class StructuredDataExtractorServiceTest {
     @Test
     fun `extract reuses existing schema when matchesExisting is set`() {
         val promptExecutor = mockk<PromptExecutor>()
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
         val tableDetector = mockk<TableDetector>()
         val schemaInferenceService = mockk<SchemaInferenceService>()
-        val structuredDataService = mockk<StructuredDataService>()
+        val structuredDataService = mockk<StructuredDataUseCases>()
 
         val service = StructuredDataExtractorService(
             promptExecutor, tableDetector, schemaInferenceService,
@@ -249,10 +249,10 @@ class StructuredDataExtractorServiceTest {
     @Test
     fun `extract returns zero rows when LLM returns empty response`() {
         val promptExecutor = mockk<PromptExecutor>()
-        val librarianService = mockk<LibrarianService>()
+        val librarianService = mockk<LibrarianUseCases>()
         val tableDetector = mockk<TableDetector>()
         val schemaInferenceService = mockk<SchemaInferenceService>()
-        val structuredDataService = mockk<StructuredDataService>()
+        val structuredDataService = mockk<StructuredDataUseCases>()
 
         val service = StructuredDataExtractorService(
             promptExecutor, tableDetector, schemaInferenceService,

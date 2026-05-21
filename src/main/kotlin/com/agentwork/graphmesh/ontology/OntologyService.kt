@@ -1,5 +1,9 @@
 package com.agentwork.graphmesh.ontology
 
+import com.agentwork.graphmesh.ontology.application.port.`in`.ImportRdfXmlOntologyUseCase
+import com.agentwork.graphmesh.ontology.application.port.`in`.ImportTurtleOntologyUseCase
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
+import com.agentwork.graphmesh.ontology.application.port.`in`.SaveOntologyUseCase
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -9,11 +13,11 @@ class OntologyService(
     private val cache: OntologyCache,
     private val validator: DefaultOntologyValidator,
     private val jenaAdapter: JenaAdapter
-) {
+) : OntologyUseCases, SaveOntologyUseCase, ImportTurtleOntologyUseCase, ImportRdfXmlOntologyUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun save(key: String, ontology: Ontology): List<ValidationError> {
+    override fun saveOntology(key: String, ontology: Ontology): List<ValidationError> {
         val errors = validator.validate(ontology)
         if (errors.isNotEmpty()) {
             logger.warn("Ontology '{}' has {} validation errors, not saving", key, errors.size)
@@ -24,16 +28,16 @@ class OntologyService(
         return emptyList()
     }
 
-    fun get(key: String): Ontology? = cache.get(key)
+    override fun get(key: String): Ontology? = cache.get(key)
 
-    fun list(): List<String> = store.listKeys()
+    override fun list(): List<String> = store.listKeys()
 
-    fun delete(key: String) {
+    override fun delete(key: String) {
         store.delete(key)
         logger.info("Ontology '{}' deleted", key)
     }
 
-    fun importTurtle(key: String, content: String, metadata: OntologyMetadata): Ontology {
+    override fun importTurtle(key: String, content: String, metadata: OntologyMetadata): Ontology {
         val model = jenaAdapter.parseTurtle(content)
         val ontology = jenaAdapter.fromJenaModel(model, metadata)
         val errors = validator.validate(ontology)
@@ -43,14 +47,14 @@ class OntologyService(
         return ontology
     }
 
-    fun exportTurtle(key: String): String {
+    override fun exportTurtle(key: String): String {
         val ontology = cache.get(key)
             ?: throw IllegalArgumentException("Ontology '$key' not found")
         val model = jenaAdapter.toJenaModel(ontology)
         return jenaAdapter.serializeTurtle(model)
     }
 
-    fun importRdfXml(key: String, content: String, metadata: OntologyMetadata): Ontology {
+    override fun importRdfXml(key: String, content: String, metadata: OntologyMetadata): Ontology {
         val model = jenaAdapter.parseRdfXml(content)
         val ontology = jenaAdapter.fromJenaModel(model, metadata)
         val errors = validator.validate(ontology)
@@ -60,12 +64,12 @@ class OntologyService(
         return ontology
     }
 
-    fun exportRdfXml(key: String): String {
+    override fun exportRdfXml(key: String): String {
         val ontology = cache.get(key)
             ?: throw IllegalArgumentException("Ontology '$key' not found")
         val model = jenaAdapter.toJenaModel(ontology)
         return jenaAdapter.serializeRdfXml(model)
     }
 
-    fun validate(ontology: Ontology): List<ValidationError> = validator.validate(ontology)
+    override fun validate(ontology: Ontology): List<ValidationError> = validator.validate(ontology)
 }

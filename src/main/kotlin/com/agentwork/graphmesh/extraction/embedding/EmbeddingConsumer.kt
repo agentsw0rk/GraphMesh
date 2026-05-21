@@ -1,7 +1,7 @@
 package com.agentwork.graphmesh.extraction.embedding
 
 import com.agentwork.graphmesh.librarian.DocumentNotFoundException
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 @Component
 class EmbeddingConsumer(
     private val embeddingService: EmbeddingService,
-    private val librarianService: LibrarianService
+    private val librarianService: LibrarianUseCases
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)

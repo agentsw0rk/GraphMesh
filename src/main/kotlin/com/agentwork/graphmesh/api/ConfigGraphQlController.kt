@@ -1,8 +1,9 @@
 package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.config.ConfigItem
-import com.agentwork.graphmesh.config.ConfigService
 import com.agentwork.graphmesh.config.ConfigType
+import com.agentwork.graphmesh.config.application.port.`in`.ConfigUseCases
+import com.agentwork.graphmesh.config.application.port.`in`.SaveConfigUseCase
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class ConfigGraphQlController(
-    private val configService: ConfigService
+    private val configService: ConfigUseCases,
+    private val saveConfigUseCase: SaveConfigUseCase
 ) {
 
     @QueryMapping
@@ -39,7 +41,7 @@ class ConfigGraphQlController(
             key = key,
             value = value
         )).copy(value = value)
-        return ConfigEntryView.from(configService.save(item))
+        return ConfigEntryView.from(saveConfigUseCase.saveConfig(item))
     }
 }
 

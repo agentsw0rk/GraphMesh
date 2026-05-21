@@ -1,12 +1,15 @@
 package com.agentwork.graphmesh.librarian
 
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
+import com.agentwork.graphmesh.librarian.application.port.`in`.CreateChildDocumentUseCase
+import com.agentwork.graphmesh.librarian.application.port.`in`.DeleteDocumentUseCase
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
+import com.agentwork.graphmesh.librarian.application.port.`in`.UploadDocumentUseCase
 import com.agentwork.graphmesh.messaging.DocumentIngestedProducer
 import com.agentwork.graphmesh.storage.blob.BlobStore
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.time.Instant
 import java.util.UUID
 
 data class DocumentFilterCriteria(
@@ -25,19 +28,19 @@ data class DocumentPageResult(
 class LibrarianService(
     private val documentStore: DocumentStore,
     private val blobStore: BlobStore,
-    private val collectionService: CollectionService,
+    private val collectionService: CollectionUseCases,
     private val documentIngestedProducer: DocumentIngestedProducer,
     @Value("\${graphmesh.storage.blob.default-bucket:graphmesh}") private val defaultBucket: String
-) {
+) : LibrarianUseCases, UploadDocumentUseCase, CreateChildDocumentUseCase, DeleteDocumentUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun uploadDocument(
+    override fun uploadDocument(
         collectionId: String,
         title: String,
         mimeType: String,
         content: ByteArray,
-        metadata: Map<String, String> = emptyMap()
+        metadata: Map<String, String>
     ): Document {
         collectionService.requireExists(collectionId)
 
@@ -69,12 +72,12 @@ class LibrarianService(
         return document
     }
 
-    fun createChildDocument(
+    override fun createChildDocument(
         parentId: String,
         type: DocumentType,
         title: String,
         content: ByteArray,
-        mimeType: String = "text/plain"
+        mimeType: String
     ): Document {
         require(type != DocumentType.SOURCE) { "Child document cannot be of type SOURCE" }
 
@@ -110,18 +113,18 @@ class LibrarianService(
         return child
     }
 
-    fun getContent(documentId: String): ByteArray {
+    override fun getContent(documentId: String): ByteArray {
         val document = documentStore.findById(documentId)
             ?: throw DocumentNotFoundException(documentId)
         return blobStore.get(defaultBucket, document.contentUri).data
     }
 
-    fun findById(id: String): Document? = documentStore.findById(id)
+    override fun findById(id: String): Document? = documentStore.findById(id)
 
-    fun findByCollection(collectionId: String, type: DocumentType? = null): List<Document> =
+    override fun findByCollection(collectionId: String, type: DocumentType?): List<Document> =
         documentStore.findByCollection(collectionId, type)
 
-    fun findByCollectionPaginated(
+    override fun findByCollectionPaginated(
         collectionId: String,
         filter: DocumentFilterCriteria,
         page: Int,
@@ -148,19 +151,19 @@ class LibrarianService(
         return DocumentPageResult(items = items, totalCount = total, hasNextPage = to < total)
     }
 
-    fun findChunksOf(documentId: String): List<Document> =
+    override fun findChunksOf(documentId: String): List<Document> =
         documentStore.findChildren(documentId).filter { it.type == DocumentType.CHUNK }
 
-    fun findChildren(parentId: String): List<Document> =
+    override fun findChildren(parentId: String): List<Document> =
         documentStore.findChildren(parentId)
 
-    fun updateState(documentId: String, state: DocumentState) {
+    override fun updateState(documentId: String, state: DocumentState) {
         documentStore.findById(documentId) ?: throw DocumentNotFoundException(documentId)
         documentStore.updateState(documentId, state)
         logger.info("Document state updated: id={}, state={}", documentId, state)
     }
 
-    fun deleteDocument(documentId: String) {
+    override fun deleteDocument(documentId: String) {
         val document = documentStore.findById(documentId)
             ?: throw DocumentNotFoundException(documentId)
 

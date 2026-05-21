@@ -1,8 +1,8 @@
 package com.agentwork.graphmesh.api
 
-import com.agentwork.graphmesh.collection.CollectionOntologyService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionOntologyUseCases
 import com.agentwork.graphmesh.ontology.OntologyInfoPayload
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.rdf.NamedGraph
 import com.agentwork.graphmesh.storage.QuadStore
 import org.springframework.graphql.data.method.annotation.Argument
@@ -12,15 +12,15 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class CollectionDataController(
-    private val collectionOntologyService: CollectionOntologyService,
+    private val collectionOntologyService: CollectionOntologyUseCases,
     private val quadStore: QuadStore,
-    private val ontologyService: OntologyService
+    private val ontologyUseCases: OntologyUseCases
 ) {
 
     @QueryMapping
     fun collectionOntologies(@Argument collectionId: String): List<CollectionOntologyPayload> =
         collectionOntologyService.listForCollection(collectionId).map { record ->
-            val ontology = ontologyService.get(record.ontologyKey)
+            val ontology = ontologyUseCases.get(record.ontologyKey)
             CollectionOntologyPayload(
                 ontologyKey = record.ontologyKey,
                 role = record.role,
@@ -58,7 +58,7 @@ class CollectionDataController(
         @Argument role: String
     ): CollectionOntologyPayload {
         val record = collectionOntologyService.assign(collectionId, ontologyKey, role, "system")
-        val ontology = ontologyService.get(ontologyKey)
+        val ontology = ontologyUseCases.get(ontologyKey)
         return CollectionOntologyPayload(
             ontologyKey = record.ontologyKey,
             role = record.role,

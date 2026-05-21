@@ -2,14 +2,16 @@ package com.agentwork.graphmesh.extraction.decoder
 
 import com.agentwork.graphmesh.librarian.DocumentState
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.CreateChildDocumentUseCase
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.llm.sanitizeForLlm
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class TextDecoderService(
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
+    private val createChildDocumentUseCase: CreateChildDocumentUseCase,
     private val pageExtractedProducer: PageExtractedProducer,
     private val markdownSplitter: MarkdownSplitter
 ) {
@@ -29,7 +31,7 @@ class TextDecoderService(
 
             pages.forEachIndexed { index, pageText ->
                 if (pageText.isBlank()) return@forEachIndexed
-                val pageDoc = librarianService.createChildDocument(
+                val pageDoc = createChildDocumentUseCase.createChildDocument(
                     parentId = documentId,
                     type = DocumentType.PAGE,
                     title = "Seite ${index + 1}",

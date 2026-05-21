@@ -3,17 +3,19 @@ package com.agentwork.graphmesh.extraction.decoder
 import com.agentwork.graphmesh.librarian.Document
 import com.agentwork.graphmesh.librarian.DocumentState
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.CreateChildDocumentUseCase
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import io.mockk.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TextDecoderServiceTest {
 
-    private val librarian = mockk<LibrarianService>(relaxed = true)
+    private val librarian = mockk<LibrarianUseCases>(relaxed = true)
+    private val createChildDocumentUseCase = mockk<CreateChildDocumentUseCase>(relaxed = true)
     private val producer = mockk<PageExtractedProducer>(relaxed = true)
     private val splitter = MarkdownSplitter()
-    private val service = TextDecoderService(librarian, producer, splitter)
+    private val service = TextDecoderService(librarian, createChildDocumentUseCase, producer, splitter)
 
     @Test
     fun `decode splits markdown and emits page events`() {
@@ -24,11 +26,11 @@ class TextDecoderServiceTest {
 
         every { librarian.getContent("doc-1") } returns content.toByteArray()
         every { librarian.findById("doc-1") } returns doc
-        every { librarian.createChildDocument(any(), any(), any(), any(), any()) } returnsMany listOf(pageDoc1, pageDoc2)
+        every { createChildDocumentUseCase.createChildDocument(any(), any(), any(), any(), any()) } returnsMany listOf(pageDoc1, pageDoc2)
 
         service.decode("doc-1")
 
-        verify(exactly = 2) { librarian.createChildDocument(parentId = "doc-1", type = DocumentType.PAGE, any(), any(), mimeType = "text/plain") }
+        verify(exactly = 2) { createChildDocumentUseCase.createChildDocument(parentId = "doc-1", type = DocumentType.PAGE, any(), any(), mimeType = "text/plain") }
         verify(exactly = 2) { producer.send(any()) }
         verify { librarian.updateState("doc-1", DocumentState.EXTRACTED) }
     }

@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.query
 
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.storage.QuadQuery
 import com.agentwork.graphmesh.storage.QuadStore
 import com.github.benmanes.caffeine.cache.Cache
@@ -11,7 +11,7 @@ import java.time.Duration
 @Service
 class CollectionContentTypeService(
     private val quadStore: QuadStore,
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
 ) {
 
     data class ContentFlags(val hasTriples: Boolean, val hasDocuments: Boolean)

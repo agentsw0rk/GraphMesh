@@ -1,13 +1,15 @@
 package com.agentwork.graphmesh.extraction.chunker
 
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.CreateChildDocumentUseCase
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class ChunkerService(
-    private val librarianService: LibrarianService,
+    private val librarianService: LibrarianUseCases,
+    private val createChildDocumentUseCase: CreateChildDocumentUseCase,
     private val chunkCreatedProducer: ChunkCreatedProducer,
     private val config: ChunkConfig
 ) {
@@ -26,7 +28,7 @@ class ChunkerService(
         val chunks = splitIntoChunks(text)
 
         for ((index, chunkResult) in chunks.withIndex()) {
-            val chunkDoc = librarianService.createChildDocument(
+            val chunkDoc = createChildDocumentUseCase.createChildDocument(
                 parentId = documentId,
                 type = DocumentType.CHUNK,
                 title = "Chunk ${index + 1}",

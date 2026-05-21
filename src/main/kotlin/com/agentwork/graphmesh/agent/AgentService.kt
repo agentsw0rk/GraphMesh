@@ -1,5 +1,6 @@
 package com.agentwork.graphmesh.agent
 
+import com.agentwork.graphmesh.agent.application.port.`in`.AgentUseCases
 import com.agentwork.graphmesh.llm.resolveLlmModel
 
 import ai.koog.agents.core.agent.AIAgent
@@ -10,8 +11,8 @@ import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.messaging.ExplainabilityEventProducer
 import com.agentwork.graphmesh.provenance.query.AgentIterationCollector
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -21,20 +22,20 @@ import java.util.UUID
 @Service
 class AgentService(
     private val promptExecutor: PromptExecutor,
-    private val graphRagService: GraphRagService,
-    private val documentRagService: DocumentRagService,
+    private val graphRagService: GraphRagUseCase,
+    private val documentRagService: DocumentRagUseCase,
     private val toolGroupRegistry: ToolGroupRegistry,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String,
     private val explainabilityProducer: ExplainabilityEventProducer
-) {
+) : AgentUseCases {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun query(
+    override fun query(
         question: String,
         collectionId: String,
-        config: AgentQueryConfig = AgentQueryConfig(),
-        allowedGroups: Set<String> = setOf("all")
+        config: AgentQueryConfig,
+        allowedGroups: Set<String>
     ): AgentQueryResult {
         val sessionId = UUID.randomUUID()
         val startTime = System.currentTimeMillis()
@@ -95,7 +96,7 @@ class AgentService(
         )
     }
 
-    fun getAvailableTools(): List<ToolInfo> = listOf(
+    override fun getAvailableTools(): List<ToolInfo> = listOf(
         ToolInfo(
             name = "knowledge_query",
             description = "Query the knowledge graph for entities and relationships.",
@@ -108,5 +109,5 @@ class AgentService(
         )
     )
 
-    fun getToolGroups(): List<ToolGroup> = toolGroupRegistry.getGroups()
+    override fun getToolGroups(): List<ToolGroup> = toolGroupRegistry.getGroups()
 }

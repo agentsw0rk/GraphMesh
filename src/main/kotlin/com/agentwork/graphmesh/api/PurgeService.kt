@@ -1,10 +1,12 @@
 package com.agentwork.graphmesh.api
 
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
+import com.agentwork.graphmesh.collection.application.port.`in`.DeleteCollectionUseCase
 import com.agentwork.graphmesh.librarian.DocumentStore
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.ontology.OntologyService
-import com.agentwork.graphmesh.storage.OrphanSweepService
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
+import com.agentwork.graphmesh.storage.application.port.`in`.OrphanSweepResult
+import com.agentwork.graphmesh.storage.application.port.`in`.OrphanSweepUseCase
 import org.apache.kafka.clients.admin.AdminClient
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaAdmin
@@ -12,11 +14,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class PurgeService(
-    private val collectionService: CollectionService,
+    private val collectionUseCases: CollectionUseCases,
+    private val deleteCollectionUseCase: DeleteCollectionUseCase,
     private val documentStore: DocumentStore,
-    private val ontologyService: OntologyService,
+    private val ontologyUseCases: OntologyUseCases,
     private val kafkaAdmin: KafkaAdmin,
-    private val orphanSweepService: OrphanSweepService,
+    private val orphanSweepService: OrphanSweepUseCase,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -33,7 +36,7 @@ class PurgeService(
         val start = System.currentTimeMillis()
         logger.warn("PURGE ALL DATA requested — deleting all content")
 
-        val collections = collectionService.findAll()
+        val collections = collectionUseCases.findAll()
         var documentsDeleted = 0
         for (collection in collections) {
             val docs = documentStore.findByCollection(collection.id, DocumentType.SOURCE)
@@ -41,13 +44,13 @@ class PurgeService(
                 documentStore.deleteWithChildren(doc.id)
                 documentsDeleted++
             }
-            collectionService.delete(collection.id)
+            deleteCollectionUseCase.deleteCollection(collection.id)
         }
         logger.info("Purge: {} collections deleted, {} source documents deleted", collections.size, documentsDeleted)
 
-        val ontologyKeys = ontologyService.list()
+        val ontologyKeys = ontologyUseCases.list()
         for (key in ontologyKeys) {
-            ontologyService.delete(key)
+            ontologyUseCases.delete(key)
         }
         logger.info("Purge: {} ontologies deleted", ontologyKeys.size)
 
@@ -65,7 +68,7 @@ class PurgeService(
         )
     }
 
-    fun purgeOrphansOnly(): OrphanSweepService.Result = orphanSweepService.sweep()
+    fun purgeOrphansOnly(): OrphanSweepResult = orphanSweepService.sweep()
 
     private fun deleteGraphmeshKafkaTopics(): Int {
         return try {

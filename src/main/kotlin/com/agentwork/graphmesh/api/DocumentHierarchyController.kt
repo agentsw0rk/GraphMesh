@@ -1,14 +1,14 @@
 package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.librarian.Document
-import com.agentwork.graphmesh.librarian.LibrarianService
+import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 
 @Controller
 class DocumentHierarchyController(
-    private val librarianService: LibrarianService
+    private val librarianService: LibrarianUseCases
 ) {
 
     @QueryMapping

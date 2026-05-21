@@ -1,5 +1,6 @@
 package com.agentwork.graphmesh.structured
 
+import com.agentwork.graphmesh.structured.application.port.`in`.StructuredDataUseCases
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -7,11 +8,11 @@ import org.springframework.stereotype.Service
 class StructuredDataService(
     private val schemaStore: SchemaStore,
     private val rowStore: CassandraRowStore
-) {
+) : StructuredDataUseCases {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun store(row: DataRow): StoreResult {
+    override fun store(row: DataRow): StoreResult {
         val schema = schemaStore.load(row.schemaName)
             ?: return StoreResult(success = false, error = "Schema '${row.schemaName}' not found")
 
@@ -24,7 +25,7 @@ class StructuredDataService(
         return StoreResult(success = true, rowsWritten = 1)
     }
 
-    fun storeBatch(rows: List<DataRow>): List<StoreResult> {
+    override fun storeBatch(rows: List<DataRow>): List<StoreResult> {
         if (rows.isEmpty()) return emptyList()
 
         val results = mutableListOf<StoreResult>()
@@ -54,18 +55,18 @@ class StructuredDataService(
         return results
     }
 
-    fun query(query: StructuredQuery): QueryResult = rowStore.query(query)
+    override fun query(query: StructuredQuery): QueryResult = rowStore.query(query)
 
-    fun saveSchema(schema: TableSchema) {
+    override fun saveSchema(schema: TableSchema) {
         schemaStore.save(schema)
         logger.info("Schema '{}' saved", schema.name)
     }
 
-    fun getSchema(name: String): TableSchema? = schemaStore.load(name)
+    override fun getSchema(name: String): TableSchema? = schemaStore.load(name)
 
-    fun listSchemas(): List<String> = schemaStore.listNames()
+    override fun listSchemas(): List<String> = schemaStore.listNames()
 
-    fun deleteSchema(name: String) {
+    override fun deleteSchema(name: String) {
         schemaStore.delete(name)
         logger.info("Schema '{}' deleted", name)
     }
