@@ -2,14 +2,14 @@ package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
 import com.agentwork.graphmesh.query.docrag.DocumentRagResult
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 
 @Controller
 class DocumentRagController(
-    private val documentRagService: DocumentRagService
+    private val documentRagService: DocumentRagUseCase
 ) {
 
     @QueryMapping

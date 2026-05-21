@@ -4,7 +4,7 @@ import ai.koog.agents.core.tools.SimpleTool
 import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.serialization.typeToken
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
 import com.agentwork.graphmesh.query.graphrag.GraphRagService
 import kotlinx.serialization.Serializable
@@ -35,7 +35,7 @@ class KnowledgeQueryTool(
 }
 
 class DocumentQueryTool(
-    private val documentRagService: DocumentRagService,
+    private val documentRagService: DocumentRagUseCase,
     private val collectionId: String
 ) : SimpleTool<DocumentQueryTool.Args>(
     argsType = typeToken<Args>(),

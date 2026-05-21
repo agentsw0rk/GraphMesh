@@ -3,7 +3,7 @@ package com.agentwork.graphmesh.api.mcp
 import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
 import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
 import com.agentwork.graphmesh.query.graphrag.GraphRagService
 import org.springframework.ai.mcp.annotation.McpTool
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class GraphMeshMcpTools(
     private val graphRagService: GraphRagService,
-    private val documentRagService: DocumentRagService,
+    private val documentRagService: DocumentRagUseCase,
     private val collectionService: CollectionUseCases,
     private val librarianService: LibrarianUseCases
 ) {

@@ -11,7 +11,7 @@ import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.messaging.ExplainabilityEventProducer
 import com.agentwork.graphmesh.provenance.query.AgentIterationCollector
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagService
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
@@ -23,7 +23,7 @@ import java.util.UUID
 class AgentService(
     private val promptExecutor: PromptExecutor,
     private val graphRagService: GraphRagService,
-    private val documentRagService: DocumentRagService,
+    private val documentRagService: DocumentRagUseCase,
     private val toolGroupRegistry: ToolGroupRegistry,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String,
     private val explainabilityProducer: ExplainabilityEventProducer

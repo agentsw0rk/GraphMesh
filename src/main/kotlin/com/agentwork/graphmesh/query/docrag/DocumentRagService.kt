@@ -1,5 +1,6 @@
 package com.agentwork.graphmesh.query.docrag
 
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.llm.resolveLlmModel
 
 import ai.koog.prompt.dsl.prompt
@@ -23,11 +24,11 @@ class DocumentRagService(
     private val promptExecutor: PromptExecutor,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val llmModelName: String,
     private val explainabilityProducer: ExplainabilityEventProducer
-) {
+) : DocumentRagUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun query(query: DocumentRagQuery): DocumentRagResult {
+    override fun query(query: DocumentRagQuery): DocumentRagResult {
         val sessionId = UUID.randomUUID()
         val startTime = System.currentTimeMillis()
 

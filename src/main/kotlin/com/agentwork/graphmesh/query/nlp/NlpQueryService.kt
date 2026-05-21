@@ -9,7 +9,7 @@ import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.query.CachedEmbeddingService
 import com.agentwork.graphmesh.query.CollectionContentTypeService
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
-import com.agentwork.graphmesh.query.docrag.DocumentRagService
+import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
 import com.agentwork.graphmesh.query.graphrag.GraphRagService
 import com.agentwork.graphmesh.storage.QuadQuery
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service
 class NlpQueryService(
     private val promptExecutor: PromptExecutor,
     private val graphRagService: GraphRagService,
-    private val documentRagService: DocumentRagService,
+    private val documentRagService: DocumentRagUseCase,
     private val contentTypeService: CollectionContentTypeService,
     private val cachedEmbeddingService: CachedEmbeddingService,
     private val quadStore: QuadStore,
