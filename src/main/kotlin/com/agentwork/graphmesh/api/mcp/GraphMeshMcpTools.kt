@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.api.mcp
 
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
 import com.agentwork.graphmesh.librarian.LibrarianService
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
 import com.agentwork.graphmesh.query.docrag.DocumentRagService
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 class GraphMeshMcpTools(
     private val graphRagService: GraphRagService,
     private val documentRagService: DocumentRagService,
-    private val collectionService: CollectionService,
+    private val collectionService: CollectionUseCases,
     private val librarianService: LibrarianService
 ) {
 
