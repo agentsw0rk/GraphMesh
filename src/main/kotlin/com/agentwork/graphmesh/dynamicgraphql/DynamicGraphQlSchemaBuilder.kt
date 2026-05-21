@@ -4,7 +4,7 @@ import com.agentwork.graphmesh.collection.application.port.`in`.CollectionOntolo
 import com.agentwork.graphmesh.ontology.DatatypeProperty
 import com.agentwork.graphmesh.ontology.ObjectProperty
 import com.agentwork.graphmesh.ontology.Ontology
-import com.agentwork.graphmesh.ontology.OntologyCache
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.storage.QuadStore
 import graphql.Scalars
 import graphql.language.IntValue
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service
 @Service
 class DynamicGraphQlSchemaBuilder(
     private val quadStore: QuadStore,
-    private val ontologyCache: OntologyCache,
+    private val ontologyUseCases: OntologyUseCases,
     private val collectionOntologyService: CollectionOntologyUseCases,
     private val registry: DynamicGraphQlRegistry,
 ) {
@@ -37,7 +37,7 @@ class DynamicGraphQlSchemaBuilder(
         if (assignments.isEmpty()) return
 
         val ontologyKey = assignments.first().ontologyKey
-        val ontology = ontologyCache.get(ontologyKey)
+        val ontology = ontologyUseCases.get(ontologyKey)
         if (ontology == null) {
             logger.warn("Ontology '{}' not found for collection '{}'", ontologyKey, collectionId)
             return

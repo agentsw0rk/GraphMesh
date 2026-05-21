@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.extraction.topic
 
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.rdf.RdfTerm
 import com.agentwork.graphmesh.skos.SkosService
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class TopicOntologyMatcher(
-    private val ontologyService: OntologyService,
+    private val ontologyUseCases: OntologyUseCases,
     private val skosService: SkosService
 ) {
 
@@ -19,7 +19,7 @@ class TopicOntologyMatcher(
         val labels = mutableSetOf<String>()
 
         // OWL classes
-        val ontology = ontologyService.get(collectionId)
+        val ontology = ontologyUseCases.get(collectionId)
         if (ontology != null) {
             for ((_, cls) in ontology.classes) {
                 cls.labels.firstOrNull()?.let { labels.add(it.value) }

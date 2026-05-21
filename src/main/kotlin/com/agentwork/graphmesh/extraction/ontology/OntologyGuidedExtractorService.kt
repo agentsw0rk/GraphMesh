@@ -9,7 +9,7 @@ import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
 import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.ontology.Ontology
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.rdf.NamedGraph
 import com.agentwork.graphmesh.rdf.Quad
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service
 @Service
 class OntologyGuidedExtractorService(
     private val promptExecutor: PromptExecutor,
-    private val ontologyService: OntologyService,
+    private val ontologyUseCases: OntologyUseCases,
     private val collectionService: CollectionUseCases,
     private val quadStore: QuadStore,
     private val librarianService: LibrarianUseCases,
@@ -48,7 +48,7 @@ class OntologyGuidedExtractorService(
         }
 
         // 2. Load ontology
-        val ontology = ontologyService.get(ontologyKey)
+        val ontology = ontologyUseCases.get(ontologyKey)
         if (ontology == null) {
             logger.warn("Ontology '{}' not found, skipping ontology extraction", ontologyKey)
             return freeResult(chunkId)

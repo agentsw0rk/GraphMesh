@@ -4,7 +4,7 @@ import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCas
 import com.agentwork.graphmesh.collection.application.port.`in`.DeleteCollectionUseCase
 import com.agentwork.graphmesh.librarian.DocumentStore
 import com.agentwork.graphmesh.librarian.DocumentType
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.storage.OrphanSweepService
 import org.apache.kafka.clients.admin.AdminClient
 import org.slf4j.LoggerFactory
@@ -16,7 +16,7 @@ class PurgeService(
     private val collectionUseCases: CollectionUseCases,
     private val deleteCollectionUseCase: DeleteCollectionUseCase,
     private val documentStore: DocumentStore,
-    private val ontologyService: OntologyService,
+    private val ontologyUseCases: OntologyUseCases,
     private val kafkaAdmin: KafkaAdmin,
     private val orphanSweepService: OrphanSweepService,
 ) {
@@ -47,9 +47,9 @@ class PurgeService(
         }
         logger.info("Purge: {} collections deleted, {} source documents deleted", collections.size, documentsDeleted)
 
-        val ontologyKeys = ontologyService.list()
+        val ontologyKeys = ontologyUseCases.list()
         for (key in ontologyKeys) {
-            ontologyService.delete(key)
+            ontologyUseCases.delete(key)
         }
         logger.info("Purge: {} ontologies deleted", ontologyKeys.size)
 

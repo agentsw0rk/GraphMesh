@@ -1,7 +1,8 @@
 package com.agentwork.graphmesh.contextcore
 
 import com.agentwork.graphmesh.ontology.OntologyMetadata
-import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.ontology.application.port.`in`.ImportTurtleOntologyUseCase
+import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.storage.QuadStore
 import com.agentwork.graphmesh.storage.blob.BlobStore
 import com.agentwork.graphmesh.storage.vector.CollectionNaming
@@ -16,7 +17,8 @@ import java.time.Instant
 class ContextCoreService(
     private val quadStore: QuadStore,
     private val vectorStore: VectorStore,
-    private val ontologyService: OntologyService,
+    private val ontologyUseCases: OntologyUseCases,
+    private val importTurtleOntologyUseCase: ImportTurtleOntologyUseCase,
     private val blobStore: BlobStore,
     private val registry: ContextCoreRegistry
 ) {
@@ -42,7 +44,7 @@ class ContextCoreService(
 
         val ontologyTtl = if (request.ontologyKey != null) {
             try {
-                ontologyService.exportTurtle(request.ontologyKey)
+                ontologyUseCases.exportTurtle(request.ontologyKey)
             } catch (e: Exception) {
                 logger.warn("Failed to export ontology '{}': {}", request.ontologyKey, e.message)
                 ""
@@ -125,7 +127,7 @@ class ContextCoreService(
         val ontologyTtl = reader.readOntology()
         if (ontologyTtl.isNotBlank()) {
             try {
-                ontologyService.importTurtle(
+                importTurtleOntologyUseCase.importTurtle(
                     "${request.coreId}-${request.version}",
                     ontologyTtl,
                     OntologyMetadata(
