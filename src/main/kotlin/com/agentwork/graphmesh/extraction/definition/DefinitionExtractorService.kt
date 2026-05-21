@@ -7,7 +7,7 @@ import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
-import com.agentwork.graphmesh.provenance.ProvenanceService
+import com.agentwork.graphmesh.provenance.application.port.`in`.ProvenanceUseCases
 import com.agentwork.graphmesh.provenance.SubgraphProvenance
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.rdf.NamedGraph
@@ -28,7 +28,7 @@ class DefinitionExtractorService(
     private val promptExecutor: PromptExecutor,
     private val quadStore: QuadStore,
     private val librarianService: LibrarianUseCases,
-    private val provenanceService: ProvenanceService,
+    private val provenanceService: ProvenanceUseCases,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String
 ) {
 

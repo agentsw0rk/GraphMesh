@@ -1,5 +1,6 @@
 package com.agentwork.graphmesh.provenance
 
+import com.agentwork.graphmesh.provenance.application.port.`in`.ProvenanceUseCases
 import com.agentwork.graphmesh.rdf.NamedGraph
 import com.agentwork.graphmesh.rdf.Quad
 import com.agentwork.graphmesh.rdf.RdfTerm
@@ -7,9 +8,9 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class ProvenanceService {
+class ProvenanceService : ProvenanceUseCases {
 
-    fun buildSubgraphQuads(provenance: SubgraphProvenance): List<Quad> {
+    override fun buildSubgraphQuads(provenance: SubgraphProvenance): List<Quad> {
         val subgraphUri = "urn:graphmesh:subgraph:${UUID.randomUUID()}"
         val activityUri = "urn:graphmesh:activity:${UUID.randomUUID()}"
         val agentUri = "urn:graphmesh:agent:${provenance.agentLabel.replace(" ", "")}"

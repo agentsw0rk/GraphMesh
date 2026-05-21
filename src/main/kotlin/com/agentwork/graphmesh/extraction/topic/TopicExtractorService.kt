@@ -5,7 +5,7 @@ import ai.koog.prompt.executor.model.PromptExecutor
 import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.llm.resolveLlmModel
 import com.agentwork.graphmesh.llm.sanitizeForLlm
-import com.agentwork.graphmesh.provenance.ProvenanceService
+import com.agentwork.graphmesh.provenance.application.port.`in`.ProvenanceUseCases
 import com.agentwork.graphmesh.provenance.SubgraphProvenance
 import com.agentwork.graphmesh.rdf.NamedGraph
 import com.agentwork.graphmesh.rdf.Quad
@@ -26,7 +26,7 @@ class TopicExtractorService(
     private val promptExecutor: PromptExecutor,
     private val quadStore: QuadStore,
     private val librarianService: LibrarianUseCases,
-    private val provenanceService: ProvenanceService,
+    private val provenanceService: ProvenanceUseCases,
     private val ontologyMatcher: TopicOntologyMatcher,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String,
     @Value("\${graphmesh.extraction.topic.min-confidence:0.5}") private val minConfidence: Double
