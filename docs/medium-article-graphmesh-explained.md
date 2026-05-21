@@ -20,7 +20,6 @@ A methane release zone refers to an area where trapped methane escapes from thaw
 The team uses satellite imagery from NASA to monitor the Svalbard archipelago.
 GraphMesh is a knowledge graph platform that turns field reports into a searchable graph.
 ```
-
 Ein knapper Glossartext. Eine Person, ein paar Begriffe, ein bisschen Geographie.
 Du klickst auf "Hochladen" — und ein paar Minuten spaeter ist daraus ein
 **Wissensgraph mit 98 Verbindungen, 6 Definitionen, 5 Themen** geworden, den du
