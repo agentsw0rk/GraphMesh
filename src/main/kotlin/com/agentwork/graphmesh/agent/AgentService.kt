@@ -1,5 +1,6 @@
 package com.agentwork.graphmesh.agent
 
+import com.agentwork.graphmesh.agent.application.port.`in`.AgentUseCases
 import com.agentwork.graphmesh.llm.resolveLlmModel
 
 import ai.koog.agents.core.agent.AIAgent
@@ -26,15 +27,15 @@ class AgentService(
     private val toolGroupRegistry: ToolGroupRegistry,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String,
     private val explainabilityProducer: ExplainabilityEventProducer
-) {
+) : AgentUseCases {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun query(
+    override fun query(
         question: String,
         collectionId: String,
-        config: AgentQueryConfig = AgentQueryConfig(),
-        allowedGroups: Set<String> = setOf("all")
+        config: AgentQueryConfig,
+        allowedGroups: Set<String>
     ): AgentQueryResult {
         val sessionId = UUID.randomUUID()
         val startTime = System.currentTimeMillis()
@@ -95,7 +96,7 @@ class AgentService(
         )
     }
 
-    fun getAvailableTools(): List<ToolInfo> = listOf(
+    override fun getAvailableTools(): List<ToolInfo> = listOf(
         ToolInfo(
             name = "knowledge_query",
             description = "Query the knowledge graph for entities and relationships.",
@@ -108,5 +109,5 @@ class AgentService(
         )
     )
 
-    fun getToolGroups(): List<ToolGroup> = toolGroupRegistry.getGroups()
+    override fun getToolGroups(): List<ToolGroup> = toolGroupRegistry.getGroups()
 }

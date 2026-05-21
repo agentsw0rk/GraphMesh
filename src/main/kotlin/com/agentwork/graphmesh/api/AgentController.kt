@@ -2,7 +2,7 @@ package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.agent.AgentQueryConfig
 import com.agentwork.graphmesh.agent.AgentQueryResult
-import com.agentwork.graphmesh.agent.AgentService
+import com.agentwork.graphmesh.agent.application.port.`in`.AgentUseCases
 import com.agentwork.graphmesh.agent.ToolGroup
 import com.agentwork.graphmesh.agent.ToolInfo
 import org.springframework.graphql.data.method.annotation.Argument
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class AgentController(
-    private val agentService: AgentService
+    private val agentService: AgentUseCases
 ) {
 
     @MutationMapping
