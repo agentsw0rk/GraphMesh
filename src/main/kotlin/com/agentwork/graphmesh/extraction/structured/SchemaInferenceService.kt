@@ -9,6 +9,8 @@ import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.structured.ColumnDescriptor
 import com.agentwork.graphmesh.structured.ColumnType
 import com.agentwork.graphmesh.structured.TableSchema
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.json.JsonReadFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.runBlocking
@@ -24,7 +26,15 @@ class SchemaInferenceService(
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val objectMapper = jacksonObjectMapper()
+
+    // LLM-Antworten enthalten oft // bzw. /* */ Kommentare und Trailing-Commas.
+    // Jacksons Default lehnt beides ab -> Parser tolerant konfigurieren.
+    private val objectMapper = jacksonObjectMapper().apply {
+        enable(JsonParser.Feature.ALLOW_COMMENTS)
+        enable(JsonReadFeature.ALLOW_TRAILING_COMMA.mappedFeature())
+        enable(JsonReadFeature.ALLOW_SINGLE_QUOTES.mappedFeature())
+        enable(JsonReadFeature.ALLOW_UNQUOTED_FIELD_NAMES.mappedFeature())
+    }
 
     fun inferSchema(
         chunkText: String,

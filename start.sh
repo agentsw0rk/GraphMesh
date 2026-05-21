@@ -22,9 +22,10 @@ JAR_PATH="build/libs/GraphMesh-0.0.1-SNAPSHOT.jar"
 SERVER_PORT="${SERVER_PORT:-8083}"
 OTEL_ENABLED="${OTEL_ENABLED:-1}"
 OTEL_AGENT_JAR="${OTEL_AGENT_JAR:-./opentelemetry-javaagent.jar}"
-OTEL_ENDPOINT="${OTEL_ENDPOINT:-https://signoz-otelcollector.operations-dev-internal.k8s.netrtl.com}"
+OTEL_ENDPOINT="${OTEL_ENDPOINT:-http://localhost:4318}"
 OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-graphmesh}"
 JAVA_EXTRA_OPTS="${JAVA_EXTRA_OPTS:-}"
+OLLAMA_BASE_URL="${OLLAMA_BASE_URL:-http://localhost:11434}"
 
 truncate_log() {
   mkdir -p "$(dirname "$LOG_FILE")"

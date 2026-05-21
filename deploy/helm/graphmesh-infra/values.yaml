@@ -124,6 +124,11 @@ schema-registry:
     brokers:
       - "PLAINTEXT://graphmesh-infra-kafka:9092"
 
+  # Heap auf Memory-Limit abgestimmt (Limit 512Mi -> Heap 384M).
+  extraEnvVars:
+    - name: SCHEMA_REGISTRY_HEAP_OPTS
+      value: "-Xms128M -Xmx384M"
+
   resources:
     requests:
       cpu: 100m

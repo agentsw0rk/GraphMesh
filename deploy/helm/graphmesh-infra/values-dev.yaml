@@ -70,6 +70,10 @@ schema-registry:
     hostname: schema-registry.k3s.home
     pathType: Prefix
     path: /
+  # Heap auf dev-Limit abgestimmt (Limit 384Mi -> Heap 256M).
+  extraEnvVars:
+    - name: SCHEMA_REGISTRY_HEAP_OPTS
+      value: "-Xms96M -Xmx256M"
   resources:
     requests:
       cpu: 50m

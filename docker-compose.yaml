@@ -17,6 +17,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+      KAFKA_HEAP_OPTS: "-Xms256M -Xmx512M"
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.9.0
@@ -29,6 +30,7 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:29092
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8181
+      SCHEMA_REGISTRY_HEAP_OPTS: "-Xms128M -Xmx256M"
 
   cassandra:
     image: cassandra:5.0
@@ -62,8 +64,16 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports:
-      - "8080:8080"
+      - "8383:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
       KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8181
+      JAVA_OPTS: "-Xms128M -Xmx256M"
+
+  grafana-otel:
+    image: grafana/otel-lgtm
+    ports:
+      - 3300:3000
+      - 4317:4317
+      - 4318:4318

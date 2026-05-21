@@ -1,5 +1,6 @@
 package com.agentwork.graphmesh.api
 
+import com.agentwork.graphmesh.rdf.NamedGraph
 import com.agentwork.graphmesh.storage.GraphMetadataView
 import com.agentwork.graphmesh.storage.QuadQuery
 import com.agentwork.graphmesh.storage.QuadStore
@@ -35,7 +36,7 @@ class GraphController(
                 subject = subject,
                 predicate = predicate,
                 objectValue = objectValue,
-                dataset = dataset
+                dataset = NamedGraph.fromDisplay(dataset)
             ),
             limit = effectiveLimit
         )
@@ -63,4 +64,12 @@ class GraphController(
     // GraphQL enum exposed as String.
     @SchemaMapping(typeName = "Quad", field = "objectType")
     fun quadObjectType(quad: StoredQuad): String = quad.objectType.name
+
+    // Default-Graph erscheint in der UI als "urn:graph:default" statt leerem String.
+    @SchemaMapping(typeName = "Quad", field = "dataset")
+    fun quadDataset(quad: StoredQuad): String = NamedGraph.displayName(quad.dataset)
+
+    @SchemaMapping(typeName = "GraphMetadata", field = "datasets")
+    fun graphMetadataDatasets(view: GraphMetadataView): List<String> =
+        view.datasets.map { NamedGraph.displayName(it) }
 }

@@ -3,8 +3,11 @@ package com.agentwork.graphmesh.api
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
 import com.agentwork.graphmesh.query.graphrag.GraphRagResult
 import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.SelectedEdge
+import com.agentwork.graphmesh.rdf.NamedGraph
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
+import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 
 @Controller
@@ -23,6 +26,10 @@ class GraphRagController(
         )
         return graphRagService.query(query)
     }
+
+    @SchemaMapping(typeName = "SelectedEdgeType", field = "dataset")
+    fun selectedEdgeDataset(edge: SelectedEdge): String =
+        NamedGraph.displayName(edge.dataset)
 }
 
 data class GraphRagInput(

@@ -3,6 +3,7 @@ package com.agentwork.graphmesh.api
 import com.agentwork.graphmesh.collection.CollectionOntologyService
 import com.agentwork.graphmesh.ontology.OntologyInfoPayload
 import com.agentwork.graphmesh.ontology.OntologyService
+import com.agentwork.graphmesh.rdf.NamedGraph
 import com.agentwork.graphmesh.storage.QuadStore
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
@@ -46,7 +47,7 @@ class CollectionDataController(
             tripleCount = stats.tripleCount.toInt(),
             entityCount = stats.entityCount.toInt(),
             predicateCount = stats.predicateCount.toInt(),
-            datasets = stats.datasets
+            datasets = stats.datasets.map { NamedGraph.displayName(it) }
         )
     }
 
@@ -85,8 +86,9 @@ class CollectionDataController(
 
     @MutationMapping
     fun deleteTriples(@Argument collectionId: String, @Argument dataset: String?): Int {
-        return if (dataset != null) {
-            quadStore.deleteByDataset(collectionId, dataset).toInt()
+        val storageDataset = NamedGraph.fromDisplay(dataset)
+        return if (storageDataset != null) {
+            quadStore.deleteByDataset(collectionId, storageDataset).toInt()
         } else {
             quadStore.deleteCollection(collectionId)
             0

@@ -62,6 +62,14 @@ schema-registry:
   # TLS/Auth via existingSecret
   auth:
     enabled: true
+  # Heap-Limit explizit setzen (Chart hat keinen heapOpts-Parameter).
+  # Wert an Memory-Limit ausrichten (typ. ~75% des Container-Limits).
+  extraEnvVars:
+    - name: SCHEMA_REGISTRY_HEAP_OPTS
+      value: "-Xms512M -Xmx1G"
+  resources:
+    requests: { cpu: "200m", memory: "768Mi" }
+    limits:   { cpu: "1",    memory: "1536Mi" }
 
 # -----------------------------------------------------------------------------
 # Cassandra
