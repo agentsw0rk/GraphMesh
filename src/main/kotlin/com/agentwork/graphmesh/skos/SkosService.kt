@@ -6,12 +6,13 @@ import com.agentwork.graphmesh.storage.QuadQuery
 import com.agentwork.graphmesh.storage.QuadStore
 import com.agentwork.graphmesh.storage.RDF_TYPE_URI
 import com.agentwork.graphmesh.storage.StoredQuad
+import com.agentwork.graphmesh.skos.application.port.`in`.SkosUseCases
 import org.springframework.stereotype.Service
 
 @Service
-class SkosService(private val quadStore: QuadStore) {
+class SkosService(private val quadStore: QuadStore) : SkosUseCases {
 
-    fun getConceptSchemes(collectionId: String): List<SkosConceptScheme> {
+    override fun getConceptSchemes(collectionId: String): List<SkosConceptScheme> {
         val schemeSubjects = quadStore.query(
             collectionId,
             QuadQuery(predicate = RDF_TYPE_URI, objectValue = SkosTypes.CONCEPT_SCHEME)
@@ -19,7 +20,7 @@ class SkosService(private val quadStore: QuadStore) {
         return schemeSubjects.map { uri -> buildScheme(collectionId, uri) }
     }
 
-    fun getConcepts(collectionId: String, schemeUri: String): List<SkosConcept> {
+    override fun getConcepts(collectionId: String, schemeUri: String): List<SkosConcept> {
         val conceptUris = quadStore.query(
             collectionId,
             QuadQuery(predicate = SkosTypes.IN_SCHEME, objectValue = schemeUri)
@@ -27,7 +28,7 @@ class SkosService(private val quadStore: QuadStore) {
         return conceptUris.mapNotNull { uri -> buildConcept(collectionId, uri) }
     }
 
-    fun getTopConcepts(collectionId: String, schemeUri: String): List<SkosConcept> {
+    override fun getTopConcepts(collectionId: String, schemeUri: String): List<SkosConcept> {
         val fromScheme = quadStore.query(
             collectionId,
             QuadQuery(subject = schemeUri, predicate = SkosTypes.HAS_TOP_CONCEPT)
@@ -40,7 +41,7 @@ class SkosService(private val quadStore: QuadStore) {
         return topUris.mapNotNull { uri -> buildConcept(collectionId, uri) }
     }
 
-    fun getNarrower(collectionId: String, conceptUri: String): List<SkosConcept> {
+    override fun getNarrower(collectionId: String, conceptUri: String): List<SkosConcept> {
         val uris = quadStore.query(
             collectionId,
             QuadQuery(subject = conceptUri, predicate = SkosTypes.NARROWER)
@@ -48,7 +49,7 @@ class SkosService(private val quadStore: QuadStore) {
         return uris.mapNotNull { uri -> buildConcept(collectionId, uri) }
     }
 
-    fun getBroader(collectionId: String, conceptUri: String): List<SkosConcept> {
+    override fun getBroader(collectionId: String, conceptUri: String): List<SkosConcept> {
         val uris = quadStore.query(
             collectionId,
             QuadQuery(subject = conceptUri, predicate = SkosTypes.BROADER)
@@ -56,7 +57,7 @@ class SkosService(private val quadStore: QuadStore) {
         return uris.mapNotNull { uri -> buildConcept(collectionId, uri) }
     }
 
-    fun getRelated(collectionId: String, conceptUri: String): List<SkosConcept> {
+    override fun getRelated(collectionId: String, conceptUri: String): List<SkosConcept> {
         val uris = quadStore.query(
             collectionId,
             QuadQuery(subject = conceptUri, predicate = SkosTypes.RELATED)
@@ -64,7 +65,7 @@ class SkosService(private val quadStore: QuadStore) {
         return uris.mapNotNull { uri -> buildConcept(collectionId, uri) }
     }
 
-    fun findByLabel(collectionId: String, label: String): List<SkosConcept> {
+    override fun findByLabel(collectionId: String, label: String): List<SkosConcept> {
         val needle = label.lowercase()
         val prefLabelQuads = quadStore.query(collectionId, QuadQuery(predicate = SkosTypes.PREF_LABEL))
         val altLabelQuads = quadStore.query(collectionId, QuadQuery(predicate = SkosTypes.ALT_LABEL))
@@ -75,10 +76,10 @@ class SkosService(private val quadStore: QuadStore) {
         return matchingUris.mapNotNull { uri -> buildConcept(collectionId, uri) }
     }
 
-    fun getConcept(collectionId: String, conceptUri: String): SkosConcept? =
+    override fun getConcept(collectionId: String, conceptUri: String): SkosConcept? =
         buildConcept(collectionId, conceptUri)
 
-    fun countConcepts(collectionId: String, schemeUri: String): Int =
+    override fun countConcepts(collectionId: String, schemeUri: String): Int =
         quadStore.query(collectionId, QuadQuery(predicate = SkosTypes.IN_SCHEME, objectValue = schemeUri))
             .map { it.subject }.distinct().size
 

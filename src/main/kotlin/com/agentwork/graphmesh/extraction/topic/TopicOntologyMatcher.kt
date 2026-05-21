@@ -3,14 +3,14 @@ package com.agentwork.graphmesh.extraction.topic
 import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.rdf.RdfTerm
-import com.agentwork.graphmesh.skos.SkosService
+import com.agentwork.graphmesh.skos.application.port.`in`.SkosUseCases
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class TopicOntologyMatcher(
     private val ontologyUseCases: OntologyUseCases,
-    private val skosService: SkosService
+    private val skosService: SkosUseCases
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
