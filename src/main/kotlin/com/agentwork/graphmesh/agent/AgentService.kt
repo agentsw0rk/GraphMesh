@@ -12,7 +12,7 @@ import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.messaging.ExplainabilityEventProducer
 import com.agentwork.graphmesh.provenance.query.AgentIterationCollector
 import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -22,7 +22,7 @@ import java.util.UUID
 @Service
 class AgentService(
     private val promptExecutor: PromptExecutor,
-    private val graphRagService: GraphRagService,
+    private val graphRagService: GraphRagUseCase,
     private val documentRagService: DocumentRagUseCase,
     private val toolGroupRegistry: ToolGroupRegistry,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String,

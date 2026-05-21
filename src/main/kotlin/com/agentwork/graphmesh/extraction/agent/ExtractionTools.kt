@@ -5,13 +5,13 @@ import ai.koog.agents.core.tools.annotations.LLMDescription
 import ai.koog.serialization.typeToken
 import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.storage.QuadStore
 import kotlinx.serialization.Serializable
 
 class GraphQueryTool(
-    private val graphRagService: GraphRagService,
+    private val graphRagService: GraphRagUseCase,
     private val collectionId: String
 ) : SimpleTool<GraphQueryTool.Args>(
     argsType = typeToken<Args>(),

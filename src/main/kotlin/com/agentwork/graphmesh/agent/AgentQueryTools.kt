@@ -6,11 +6,11 @@ import ai.koog.serialization.typeToken
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
 import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import kotlinx.serialization.Serializable
 
 class KnowledgeQueryTool(
-    private val graphRagService: GraphRagService,
+    private val graphRagService: GraphRagUseCase,
     private val collectionId: String
 ) : SimpleTool<KnowledgeQueryTool.Args>(
     argsType = typeToken<Args>(),

@@ -1,6 +1,7 @@
 package com.agentwork.graphmesh.query.graphrag
 
 import com.agentwork.graphmesh.llm.resolveLlmModel
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
@@ -25,11 +26,11 @@ class GraphRagService(
     private val promptExecutor: PromptExecutor,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val llmModelName: String,
     private val explainabilityProducer: ExplainabilityEventProducer
-) {
+) : GraphRagUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun query(query: GraphRagQuery): GraphRagResult {
+    override fun query(query: GraphRagQuery): GraphRagResult {
         val sessionId = UUID.randomUUID()
         val startTime = System.currentTimeMillis()
 

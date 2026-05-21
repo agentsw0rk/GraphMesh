@@ -2,7 +2,7 @@ package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
 import com.agentwork.graphmesh.query.graphrag.GraphRagResult
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import com.agentwork.graphmesh.query.graphrag.SelectedEdge
 import com.agentwork.graphmesh.rdf.NamedGraph
 import org.springframework.graphql.data.method.annotation.Argument
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class GraphRagController(
-    private val graphRagService: GraphRagService
+    private val graphRagService: GraphRagUseCase
 ) {
 
     @QueryMapping

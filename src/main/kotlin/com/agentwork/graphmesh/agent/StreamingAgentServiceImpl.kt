@@ -8,7 +8,7 @@ import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
 import ai.koog.prompt.streaming.StreamFrame
 import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.slf4j.LoggerFactory
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service
 @Service
 class StreamingAgentServiceImpl(
     private val promptExecutor: PromptExecutor,
-    private val graphRagService: GraphRagService,
+    private val graphRagService: GraphRagUseCase,
     private val documentRagService: DocumentRagUseCase,
     private val toolGroupRegistry: ToolGroupRegistry,
     @Value("\${graphmesh.extraction.model:gpt-4o}") private val modelName: String

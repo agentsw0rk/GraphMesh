@@ -11,7 +11,7 @@ import ai.koog.prompt.llm.LLModel
 import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.provenance.application.port.`in`.ProvenanceUseCases
 import com.agentwork.graphmesh.provenance.SubgraphProvenance
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import com.agentwork.graphmesh.rdf.EntityIdGenerator
 import com.agentwork.graphmesh.rdf.NamedGraph
 import com.agentwork.graphmesh.rdf.Quad
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service
 @Service
 class AgentExtractorService(
     private val promptExecutor: PromptExecutor,
-    private val graphRagService: GraphRagService,
+    private val graphRagService: GraphRagUseCase,
     private val quadStore: QuadStore,
     private val librarianService: LibrarianUseCases,
     private val provenanceService: ProvenanceUseCases,

@@ -5,14 +5,14 @@ import com.agentwork.graphmesh.librarian.application.port.`in`.LibrarianUseCases
 import com.agentwork.graphmesh.query.docrag.DocumentRagQuery
 import com.agentwork.graphmesh.query.docrag.application.port.`in`.DocumentRagUseCase
 import com.agentwork.graphmesh.query.graphrag.GraphRagQuery
-import com.agentwork.graphmesh.query.graphrag.GraphRagService
+import com.agentwork.graphmesh.query.graphrag.application.port.`in`.GraphRagUseCase
 import org.springframework.ai.mcp.annotation.McpTool
 import org.springframework.ai.mcp.annotation.McpToolParam
 import org.springframework.stereotype.Service
 
 @Service
 class GraphMeshMcpTools(
-    private val graphRagService: GraphRagService,
+    private val graphRagService: GraphRagUseCase,
     private val documentRagService: DocumentRagUseCase,
     private val collectionService: CollectionUseCases,
     private val librarianService: LibrarianUseCases
