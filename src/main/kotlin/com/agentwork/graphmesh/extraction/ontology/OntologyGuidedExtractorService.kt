@@ -6,7 +6,7 @@ import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.model.PromptExecutor
 import ai.koog.prompt.llm.LLMProvider
 import ai.koog.prompt.llm.LLModel
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
 import com.agentwork.graphmesh.librarian.LibrarianService
 import com.agentwork.graphmesh.ontology.Ontology
 import com.agentwork.graphmesh.ontology.OntologyService
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service
 class OntologyGuidedExtractorService(
     private val promptExecutor: PromptExecutor,
     private val ontologyService: OntologyService,
-    private val collectionService: CollectionService,
+    private val collectionService: CollectionUseCases,
     private val quadStore: QuadStore,
     private val librarianService: LibrarianService,
     private val objectMapper: ObjectMapper,

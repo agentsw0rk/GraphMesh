@@ -1,6 +1,7 @@
 package com.agentwork.graphmesh.api
 
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
+import com.agentwork.graphmesh.collection.application.port.`in`.DeleteCollectionUseCase
 import com.agentwork.graphmesh.librarian.DocumentStore
 import com.agentwork.graphmesh.librarian.DocumentType
 import com.agentwork.graphmesh.ontology.OntologyService
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class PurgeService(
-    private val collectionService: CollectionService,
+    private val collectionUseCases: CollectionUseCases,
+    private val deleteCollectionUseCase: DeleteCollectionUseCase,
     private val documentStore: DocumentStore,
     private val ontologyService: OntologyService,
     private val kafkaAdmin: KafkaAdmin,
@@ -33,7 +35,7 @@ class PurgeService(
         val start = System.currentTimeMillis()
         logger.warn("PURGE ALL DATA requested — deleting all content")
 
-        val collections = collectionService.findAll()
+        val collections = collectionUseCases.findAll()
         var documentsDeleted = 0
         for (collection in collections) {
             val docs = documentStore.findByCollection(collection.id, DocumentType.SOURCE)
@@ -41,7 +43,7 @@ class PurgeService(
                 documentStore.deleteWithChildren(doc.id)
                 documentsDeleted++
             }
-            collectionService.delete(collection.id)
+            deleteCollectionUseCase.deleteCollection(collection.id)
         }
         logger.info("Purge: {} collections deleted, {} source documents deleted", collections.size, documentsDeleted)
 

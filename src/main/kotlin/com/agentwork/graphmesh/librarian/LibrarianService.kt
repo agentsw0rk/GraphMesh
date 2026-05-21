@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.librarian
 
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
 import com.agentwork.graphmesh.messaging.DocumentIngestedProducer
 import com.agentwork.graphmesh.storage.blob.BlobStore
 import org.slf4j.LoggerFactory
@@ -25,7 +25,7 @@ data class DocumentPageResult(
 class LibrarianService(
     private val documentStore: DocumentStore,
     private val blobStore: BlobStore,
-    private val collectionService: CollectionService,
+    private val collectionService: CollectionUseCases,
     private val documentIngestedProducer: DocumentIngestedProducer,
     @Value("\${graphmesh.storage.blob.default-bucket:graphmesh}") private val defaultBucket: String
 ) {

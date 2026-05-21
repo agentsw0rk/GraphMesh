@@ -1,6 +1,6 @@
 package com.agentwork.graphmesh.dynamicgraphql
 
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
 import graphql.ExecutionInput
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class DynamicGraphQlController(
     private val registry: DynamicGraphQlRegistry,
-    private val collectionService: CollectionService,
+    private val collectionService: CollectionUseCases,
 ) {
 
     @PostMapping("/graphql/{collectionName}")

@@ -1,7 +1,10 @@
 package com.agentwork.graphmesh.api
 
 import com.agentwork.graphmesh.collection.Collection
-import com.agentwork.graphmesh.collection.CollectionService
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
+import com.agentwork.graphmesh.collection.application.port.`in`.CreateCollectionUseCase
+import com.agentwork.graphmesh.collection.application.port.`in`.DeleteCollectionUseCase
+import com.agentwork.graphmesh.collection.application.port.`in`.UpdateCollectionUseCase
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -10,17 +13,20 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class CollectionController(
-    private val collectionService: CollectionService
+    private val collectionUseCases: CollectionUseCases,
+    private val createCollectionUseCase: CreateCollectionUseCase,
+    private val updateCollectionUseCase: UpdateCollectionUseCase,
+    private val deleteCollectionUseCase: DeleteCollectionUseCase,
 ) {
 
     @QueryMapping
     fun collections(@Argument tags: List<String>?): List<Collection> {
-        return collectionService.findAll(tags?.toSet() ?: emptySet())
+        return collectionUseCases.findAll(tags?.toSet() ?: emptySet())
     }
 
     @QueryMapping
     fun collection(@Argument id: String): Collection? {
-        return collectionService.findById(id)
+        return collectionUseCases.findById(id)
     }
 
     @SchemaMapping(typeName = "Collection", field = "metadata")
@@ -30,7 +36,7 @@ class CollectionController(
 
     @MutationMapping
     fun createCollection(@Argument input: CreateCollectionInput): Collection {
-        return collectionService.create(
+        return createCollectionUseCase.createCollection(
             name = input.name,
             description = input.description ?: "",
             tags = input.tags?.toSet() ?: emptySet(),
@@ -40,7 +46,7 @@ class CollectionController(
 
     @MutationMapping
     fun updateCollection(@Argument id: String, @Argument input: UpdateCollectionInput): Collection {
-        return collectionService.update(
+        return updateCollectionUseCase.updateCollection(
             id = id,
             name = input.name,
             description = input.description,
@@ -51,7 +57,7 @@ class CollectionController(
 
     @MutationMapping
     fun deleteCollection(@Argument id: String): Boolean {
-        collectionService.delete(id)
+        deleteCollectionUseCase.deleteCollection(id)
         return true
     }
 }

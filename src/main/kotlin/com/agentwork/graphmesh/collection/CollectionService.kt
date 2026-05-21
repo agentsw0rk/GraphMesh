@@ -1,5 +1,9 @@
 package com.agentwork.graphmesh.collection
 
+import com.agentwork.graphmesh.collection.application.port.`in`.CollectionUseCases
+import com.agentwork.graphmesh.collection.application.port.`in`.CreateCollectionUseCase
+import com.agentwork.graphmesh.collection.application.port.`in`.DeleteCollectionUseCase
+import com.agentwork.graphmesh.collection.application.port.`in`.UpdateCollectionUseCase
 import com.agentwork.graphmesh.tenant.AccessDeniedException
 import com.agentwork.graphmesh.tenant.TenantContext
 import org.slf4j.LoggerFactory
@@ -13,15 +17,15 @@ class CollectionService(
     private val lifecycleManager: CollectionLifecycleManager,
     private val eventPublisher: ApplicationEventPublisher,
     private val collectionEventProducer: CollectionEventProducer,
-) {
+) : CollectionUseCases, CreateCollectionUseCase, UpdateCollectionUseCase, DeleteCollectionUseCase {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun create(
+    override fun createCollection(
         name: String,
-        description: String = "",
-        tags: Set<String> = emptySet(),
-        metadata: Map<String, String> = emptyMap()
+        description: String,
+        tags: Set<String>,
+        metadata: Map<String, String>
     ): Collection {
         require(collectionStore.findByName(name) == null) {
             "Collection with name '$name' already exists"
@@ -48,7 +52,7 @@ class CollectionService(
         return collection
     }
 
-    fun delete(id: String) {
+    override fun deleteCollection(id: String) {
         val collection = findByIdWithAccessCheck(id)
 
         val result = lifecycleManager.purge(id)
@@ -63,12 +67,12 @@ class CollectionService(
         logger.info("Collection deleted (cascade): id={}, name={}", id, collection.name)
     }
 
-    fun update(
+    override fun updateCollection(
         id: String,
-        name: String? = null,
-        description: String? = null,
-        tags: Set<String>? = null,
-        metadata: Map<String, String>? = null
+        name: String?,
+        description: String?,
+        tags: Set<String>?,
+        metadata: Map<String, String>?
     ): Collection {
         val existing = findByIdWithAccessCheck(id)
 
@@ -96,19 +100,19 @@ class CollectionService(
         return updated
     }
 
-    fun findById(id: String): Collection? {
+    override fun findById(id: String): Collection? {
         val collection = collectionStore.findById(id) ?: return null
         checkTenantAccess(collection)
         return collection
     }
 
-    fun findByName(name: String): Collection? {
+    override fun findByName(name: String): Collection? {
         val collection = collectionStore.findByName(name) ?: return null
         checkTenantAccess(collection)
         return collection
     }
 
-    fun findAll(tags: Set<String> = emptySet()): List<Collection> {
+    override fun findAll(tags: Set<String>): List<Collection> {
         var all = collectionStore.findAll()
 
         val tenant = TenantContext.getOrNull()
@@ -122,7 +126,7 @@ class CollectionService(
         return all
     }
 
-    fun requireExists(id: String) {
+    override fun requireExists(id: String) {
         if (!collectionStore.exists(id)) {
             throw CollectionNotFoundException(id)
         }
