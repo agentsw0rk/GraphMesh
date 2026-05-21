@@ -5,7 +5,8 @@ import com.agentwork.graphmesh.collection.application.port.`in`.DeleteCollection
 import com.agentwork.graphmesh.librarian.DocumentStore
 import com.agentwork.graphmesh.librarian.DocumentType
 import com.agentwork.graphmesh.ontology.application.port.`in`.OntologyUseCases
-import com.agentwork.graphmesh.storage.OrphanSweepService
+import com.agentwork.graphmesh.storage.application.port.`in`.OrphanSweepResult
+import com.agentwork.graphmesh.storage.application.port.`in`.OrphanSweepUseCase
 import org.apache.kafka.clients.admin.AdminClient
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaAdmin
@@ -18,7 +19,7 @@ class PurgeService(
     private val documentStore: DocumentStore,
     private val ontologyUseCases: OntologyUseCases,
     private val kafkaAdmin: KafkaAdmin,
-    private val orphanSweepService: OrphanSweepService,
+    private val orphanSweepService: OrphanSweepUseCase,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -67,7 +68,7 @@ class PurgeService(
         )
     }
 
-    fun purgeOrphansOnly(): OrphanSweepService.Result = orphanSweepService.sweep()
+    fun purgeOrphansOnly(): OrphanSweepResult = orphanSweepService.sweep()
 
     private fun deleteGraphmeshKafkaTopics(): Int {
         return try {
